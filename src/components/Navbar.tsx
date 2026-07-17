@@ -21,7 +21,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2 font-bold text-xl">
             <Brain className="h-8 w-8 text-emerald-500" />
-            <span className="gradient-text">MDCAT Prep AI</span>
+            <span className="gradient-text">MedPrep AI</span>
           </Link>
 
           {/* Desktop Nav */}

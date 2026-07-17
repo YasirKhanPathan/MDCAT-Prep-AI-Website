@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MDCAT Prep AI - Your Smart Study Companion",
+  title: "MedPrep AI - Your Smart MDCAT Study Companion",
   description:
     "AI-powered MDCAT preparation platform for Pakistani medical students. Practice MCQs, chat with AI tutor, and track your progress.",
   keywords: "MDCAT, PMC, medical admission, Pakistan, AI tutor, MCQ practice",

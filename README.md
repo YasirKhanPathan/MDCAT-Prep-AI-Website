@@ -1,4 +1,4 @@
-# MDCAT Prep AI
+# MedPrep AI
 
 An AI-powered MDCAT preparation platform for Pakistani medical students. Practice MCQs, chat with an AI tutor, and track your progress across all 5 subjects.
 
@@ -12,7 +12,7 @@ An AI-powered MDCAT preparation platform for Pakistani medical students. Practic
 
 ## Tech Stack
 
-- **Frontend**: Next.js 14 (App Router) + React + TypeScript + Tailwind CSS
+- **Frontend**: Next.js 16 (App Router) + React + TypeScript + Tailwind CSS
 - **AI Backend**: Google Gemini API (free tier)
 - **Charts**: Recharts
 - **Icons**: Lucide React
@@ -22,8 +22,8 @@ An AI-powered MDCAT preparation platform for Pakistani medical students. Practic
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/YasirKhanPathan/MDCAT-Prep-AI-Website.git
-cd MDCAT-Prep-AI-Website
+git clone https://github.com/YasirKhanPathan/MedPrep-AI.git
+cd MedPrep-AI
 ```
 
 2. Install dependencies:
@@ -44,12 +44,6 @@ npm run dev
 ```
 
 5. Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-## Deployment
-
-Deploy to Vercel with one click:
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/YasirKhanPathan/MDCAT-Prep-AI-Website)
 
 ## Project Structure
 
