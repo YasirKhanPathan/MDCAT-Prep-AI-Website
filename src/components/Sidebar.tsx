@@ -17,18 +17,29 @@ import {
   Moon,
   ChevronLeft,
   ChevronRight,
+  Layers,
+  AlertTriangle,
+  FlaskConical,
+  BookOpenCheck,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/roadmap", label: "Roadmap", icon: Map },
+  { divider: true, label: "Study" },
   { href: "/chat", label: "AI Tutor", icon: MessageCircle },
-  { href: "/practice", label: "Practice", icon: Target },
+  { href: "/flashcards", label: "Flashcards", icon: Layers },
+  { href: "/practice", label: "Practice MCQs", icon: Target },
   { href: "/quizzes", label: "Quizzes", icon: HelpCircle },
+  { href: "/mock-exam", label: "Mock Exam", icon: BookOpenCheck },
+  { divider: true, label: "Resources" },
   { href: "/notes", label: "Notes", icon: FileText },
   { href: "/lectures", label: "Lectures", icon: PlayCircle },
+  { href: "/formulas", label: "Formula Sheet", icon: FlaskConical },
   { href: "/past-papers", label: "Past Papers", icon: ClipboardList },
+  { divider: true, label: "Review" },
+  { href: "/wrong-answers", label: "Wrong Answers", icon: AlertTriangle },
   { href: "/progress", label: "Progress", icon: BarChart3 },
 ];
 
@@ -69,23 +80,34 @@ export default function Sidebar() {
 
       {/* Nav Items */}
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          const active = isActive(item.href);
+        {navItems.map((item, idx) => {
+          if ("divider" in item && item.divider) {
+            if (collapsed) return <div key={`div-${idx}`} className="border-t border-gray-200 dark:border-gray-800 my-2" />;
+            return (
+              <p key={`div-${idx}`} className="text-[10px] font-semibold uppercase text-gray-400 dark:text-gray-600 px-3 pt-4 pb-1">
+                {item.label}
+              </p>
+            );
+          }
+          const navItem = item as { href: string; label: string; icon: React.ComponentType<{ className?: string }> };
+          const href = navItem.href;
+          const Icon = navItem.icon;
+          const label = navItem.label;
+          const active = isActive(href);
           return (
             <Link
-              key={item.href}
-              href={item.href}
+              key={href}
+              href={href}
               onClick={() => setMobileOpen(false)}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+              className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                 active
                   ? "bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400"
                   : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
               } ${collapsed ? "justify-center" : ""}`}
-              title={collapsed ? item.label : undefined}
+              title={collapsed ? label : undefined}
             >
-              <Icon className="h-5 w-5 flex-shrink-0" />
-              {!collapsed && <span>{item.label}</span>}
+              <Icon className="h-4 w-4 flex-shrink-0" />
+              {!collapsed && <span>{label}</span>}
             </Link>
           );
         })}
