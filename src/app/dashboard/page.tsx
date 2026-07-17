@@ -16,7 +16,7 @@ import {
   Clock,
   BookOpen,
   CheckCircle2,
-  Circle,
+  Zap,
 } from "lucide-react";
 import {
   getProgressData,
@@ -26,12 +26,28 @@ import {
 } from "@/lib/progress";
 import { subjects } from "@/data/subjects";
 
+interface AISuggestion {
+  task: string;
+  subject: string;
+  priority: string;
+  estimatedMinutes: number;
+  type: string;
+}
+
+const ROADMAP_STORAGE_KEY = "mdcat-roadmap-progress";
+
 const iconMap: Record<string, string> = {
   biology: "🧬",
   chemistry: "⚗️",
   physics: "⚡",
   english: "📝",
   "logical-reasoning": "🧠",
+};
+
+const priorityColors: Record<string, string> = {
+  high: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+  medium: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+  low: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
 };
 
 const quickActions = [
@@ -45,49 +61,31 @@ const quickActions = [
 
 export default function DashboardPage() {
   const [progress, setProgress] = useState<StudentProgress | null>(null);
-  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [aiTasks, setAiTasks] = useState<AISuggestion[]>([]);
+  const [loadingTasks, setLoadingTasks] = useState(true);
 
   useEffect(() => {
     const data = getProgressData();
     setProgress(data);
-    generateSuggestions(data);
+    fetchSuggestions(data);
   }, []);
 
-  const generateSuggestions = (data: StudentProgress) => {
-    const tips: string[] = [];
-
-    if (data.totalQuestionsAttempted === 0) {
-      tips.push("Start with a practice quiz to establish your baseline!");
-      tips.push("Try the AI Tutor for any concept you find difficult.");
-    } else {
-      const accuracy = getAccuracy();
-      if (accuracy < 50) {
-        tips.push("Focus on understanding concepts before attempting more MCQs.");
-      } else if (accuracy < 75) {
-        tips.push("Good progress! Focus on your weak topics to improve further.");
-      } else {
-        tips.push("Excellent work! Try harder difficulty levels to challenge yourself.");
-      }
-
-      const weakTopics = Object.entries(data.topicStats)
-        .filter(([, s]) => s.attempted >= 3)
-        .map(([t, s]) => ({ topic: t, accuracy: Math.round((s.correct / s.attempted) * 100) }))
-        .sort((a, b) => a.accuracy - b.accuracy)
-        .slice(0, 3);
-
-      if (weakTopics.length > 0) {
-        tips.push(`Work on weak areas: ${weakTopics.map((w) => w.topic.split("/")[0]).join(", ")}`);
-      }
-
-      if (data.studyStreak === 0) {
-        tips.push("Start a study streak! Practice today to build momentum.");
-      } else if (data.studyStreak >= 3) {
-        tips.push(`${data.studyStreak}-day streak! Keep it going!`);
-      }
+  const fetchSuggestions = async (progressData: StudentProgress) => {
+    try {
+      const roadmapProgress = JSON.parse(localStorage.getItem(ROADMAP_STORAGE_KEY) || "{}");
+      const lang = localStorage.getItem("mdcat-chat-language") || "en";
+      const res = await fetch("/api/suggest-tasks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ progress: progressData, roadmapProgress, language: lang }),
+      });
+      const data = await res.json();
+      setAiTasks(data.tasks || []);
+    } catch {
+      setAiTasks([]);
+    } finally {
+      setLoadingTasks(false);
     }
-
-    tips.push("Aim for 100-200 MCQs daily for optimal preparation.");
-    setSuggestions(tips);
   };
 
   const accuracy = progress ? getAccuracy() : 0;
@@ -131,17 +129,43 @@ export default function DashboardPage() {
         {/* AI Suggestions */}
         <div className="lg:col-span-2 bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6">
           <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-            <MessageCircle className="h-5 w-5 text-emerald-500" />
-            AI Recommendations
+            <Zap className="h-5 w-5 text-emerald-500" />
+            AI-Powered Daily Tasks
           </h2>
-          <div className="space-y-3">
-            {suggestions.map((tip, i) => (
-              <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/20">
+          {loadingTasks ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="animate-spin h-6 w-6 border-2 border-emerald-500 border-t-transparent rounded-full" />
+              <span className="ml-3 text-sm text-gray-500">Generating personalized tasks...</span>
+            </div>
+          ) : aiTasks.length > 0 ? (
+            <div className="space-y-3">
+              {aiTasks.map((task, i) => (
+                <div key={i} className="flex items-start gap-3 p-3 rounded-xl border border-gray-200 dark:border-gray-800 hover:border-emerald-500/30 transition-colors">
+                  <div className="mt-0.5 w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-xs font-bold text-emerald-600">
+                    {i + 1}
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">{task.task}</p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-xs text-gray-500">{task.subject}</span>
+                      <span className="text-xs text-gray-400">•</span>
+                      <span className="text-xs text-gray-500">{task.estimatedMinutes} min</span>
+                      <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${priorityColors[task.priority] || ""}`}>
+                        {task.priority}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="space-y-3">
+              <div className="flex items-start gap-3 p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/20">
                 <CheckCircle2 className="h-5 w-5 text-emerald-500 mt-0.5 flex-shrink-0" />
-                <p className="text-sm">{tip}</p>
+                <p className="text-sm">Start practicing to get personalized AI recommendations!</p>
               </div>
-            ))}
-          </div>
+            </div>
+          )}
         </div>
 
         {/* Quick Actions */}
