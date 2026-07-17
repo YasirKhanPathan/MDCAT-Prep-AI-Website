@@ -10,7 +10,7 @@ import {
   BarChart3,
 } from "lucide-react";
 import MCQCard, { Question } from "@/components/MCQCard";
-import { recordQuizResult } from "@/lib/progress";
+import { recordQuizResult, recordWrongAnswer } from "@/lib/progress";
 
 type Phase = "setup" | "generating" | "quiz" | "results";
 
@@ -76,6 +76,19 @@ export default function PracticePageContent() {
     const newShowExplanations = [...showExplanations];
     newShowExplanations[questionIndex] = true;
     setShowExplanations(newShowExplanations);
+
+    const q = questions[questionIndex];
+    if (selectedIndex !== q.correctIndex) {
+      recordWrongAnswer({
+        subject: selectedSubject,
+        topic: selectedTopic,
+        question: q.question,
+        options: q.options,
+        selectedAnswer: selectedIndex,
+        correctAnswer: q.correctIndex,
+        explanation: q.explanation,
+      });
+    }
   };
 
   const handleFinish = () => {

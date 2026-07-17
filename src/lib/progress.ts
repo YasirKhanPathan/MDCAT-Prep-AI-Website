@@ -11,8 +11,21 @@ export interface QuizResult {
   timeSpent: number; // in seconds
 }
 
+export interface WrongAnswer {
+  id: string;
+  date: string;
+  subject: string;
+  topic: string;
+  question: string;
+  options: string[];
+  selectedAnswer: number;
+  correctAnswer: number;
+  explanation: string;
+}
+
 export interface StudentProgress {
   quizResults: QuizResult[];
+  wrongAnswers: WrongAnswer[];
   totalQuestionsAttempted: number;
   totalCorrectAnswers: number;
   subjectStats: Record<string, { attempted: number; correct: number }>;
@@ -40,6 +53,7 @@ function saveProgress(progress: StudentProgress) {
 function createEmptyProgress(): StudentProgress {
   return {
     quizResults: [],
+    wrongAnswers: [],
     totalQuestionsAttempted: 0,
     totalCorrectAnswers: 0,
     subjectStats: {},
@@ -145,4 +159,35 @@ export function getRecentResults(limit: number = 10): QuizResult[] {
 
 export function resetProgress() {
   saveProgress(createEmptyProgress());
+}
+
+export function recordWrongAnswer(answer: Omit<WrongAnswer, "id" | "date">) {
+  const progress = getProgress();
+  const newAnswer: WrongAnswer = {
+    ...answer,
+    id: Date.now().toString(),
+    date: new Date().toISOString(),
+  };
+  progress.wrongAnswers.push(newAnswer);
+  saveProgress(progress);
+}
+
+export function getWrongAnswers(): WrongAnswer[] {
+  return getProgress().wrongAnswers;
+}
+
+export function getWrongAnswersBySubject(subjectId: string): WrongAnswer[] {
+  return getProgress().wrongAnswers.filter((w) => w.subject === subjectId);
+}
+
+export function clearWrongAnswer(id: string) {
+  const progress = getProgress();
+  progress.wrongAnswers = progress.wrongAnswers.filter((w) => w.id !== id);
+  saveProgress(progress);
+}
+
+export function clearAllWrongAnswers() {
+  const progress = getProgress();
+  progress.wrongAnswers = [];
+  saveProgress(progress);
 }
