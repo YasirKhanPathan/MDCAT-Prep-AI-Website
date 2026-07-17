@@ -40,6 +40,24 @@ export default function ProgressPage() {
 
   useEffect(() => {
     setProgress(getProgressData());
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        setProgress(getProgressData());
+      }
+    };
+
+    const handleFocus = () => {
+      setProgress(getProgressData());
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("focus", handleFocus);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("focus", handleFocus);
+    };
   }, []);
 
   if (!progress) {

@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Send, Bot, User, Loader2, BookOpen } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { Send, Bot, User, Loader2, BookOpen, Trash2 } from "lucide-react";
 import { subjects } from "@/data/subjects";
 
 interface Message {
@@ -9,11 +10,37 @@ interface Message {
   content: string;
 }
 
+const CHAT_STORAGE_KEY = "mdcat-chat-history";
+
+function loadChatHistory(): { messages: Message[]; subject: string } {
+  if (typeof window === "undefined") {
+    return { messages: [], subject: "general" };
+  }
+  const stored = localStorage.getItem(CHAT_STORAGE_KEY);
+  if (stored) {
+    try {
+      return JSON.parse(stored);
+    } catch {
+      return { messages: [], subject: "general" };
+    }
+  }
+  return { messages: [], subject: "general" };
+}
+
+function saveChatHistory(messages: Message[], subject: string) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify({ messages, subject }));
+}
+
 export default function ChatInterface() {
+  const searchParams = useSearchParams();
+  const urlSubject = searchParams.get("subject");
+
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [selectedSubject, setSelectedSubject] = useState<string>("general");
+  const [initialized, setInitialized] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -26,7 +53,20 @@ export default function ChatInterface() {
   }, [messages]);
 
   useEffect(() => {
-    if (messages.length === 0) {
+    if (initialized) return;
+
+    const saved = loadChatHistory();
+
+    if (urlSubject && subjects.some((s) => s.id === urlSubject)) {
+      setSelectedSubject(urlSubject);
+      saveChatHistory(saved.messages, urlSubject);
+    } else if (saved.subject) {
+      setSelectedSubject(saved.subject);
+    }
+
+    if (saved.messages.length > 0) {
+      setMessages(saved.messages);
+    } else {
       setMessages([
         {
           role: "assistant",
@@ -35,7 +75,26 @@ export default function ChatInterface() {
         },
       ]);
     }
-  }, []);
+
+    setInitialized(true);
+  }, [urlSubject, initialized]);
+
+  useEffect(() => {
+    if (initialized && messages.length > 0) {
+      saveChatHistory(messages, selectedSubject);
+    }
+  }, [messages, selectedSubject, initialized]);
+
+  const handleClearChat = () => {
+    setMessages([
+      {
+        role: "assistant",
+        content:
+          "Chat cleared! What would you like to study today?",
+      },
+    ]);
+    localStorage.removeItem(CHAT_STORAGE_KEY);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,7 +132,7 @@ export default function ChatInterface() {
         {
           role: "assistant",
           content:
-            "Sorry, I encountered an error. Please make sure your Gemini API key is set in .env.local as NEXT_PUBLIC_GEMINI_API_KEY. Try again!",
+            "Sorry, I encountered an error. Please make sure your API key is configured correctly. Try again!",
         },
       ]);
     } finally {
@@ -125,6 +184,13 @@ export default function ChatInterface() {
               {subject.name}
             </button>
           ))}
+          <button
+            onClick={handleClearChat}
+            className="ml-auto p-1.5 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors"
+            title="Clear chat history"
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
         </div>
         {currentSubject && (
           <p className="text-xs text-gray-500 mt-2 ml-7">
