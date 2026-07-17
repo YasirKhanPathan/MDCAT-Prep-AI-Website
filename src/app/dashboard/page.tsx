@@ -76,10 +76,8 @@ export default function DashboardPage() {
   const [loadingTasks, setLoadingTasks] = useState(true);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [weeklyStats, setWeeklyStats] = useState({ questionsAttempted: 0, accuracy: 0, correctAnswers: 0 });
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
     try {
       const data = getProgressData();
       setProgress(data);
@@ -129,28 +127,14 @@ export default function DashboardPage() {
   const accuracy = progress ? getAccuracy() : 0;
   const recentResults = progress ? getRecentResults(5) : [];
 
-  // Calculate exam countdown
-  const getDaysUntilExam = () => {
+  const daysUntilExam = (() => {
     if (!userProfile?.examDate) return null;
     const examDate = new Date(userProfile.examDate);
     const today = new Date();
     const diffTime = examDate.getTime() - today.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays > 0 ? diffDays : 0;
-  };
-
-  const daysUntilExam = getDaysUntilExam();
-
-  if (!mounted) {
-    return (
-      <div className="p-6 max-w-7xl mx-auto">
-        <div className="mb-8">
-          <div className="h-8 bg-gray-200 dark:bg-gray-800 rounded w-48 mb-2 animate-pulse" />
-          <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded w-96 animate-pulse" />
-        </div>
-      </div>
-    );
-  }
+  })();
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
@@ -169,7 +153,6 @@ export default function DashboardPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-        {/* Exam Countdown Card */}
         {daysUntilExam !== null && (
           <div className="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl p-5 text-white">
             <Calendar className="h-5 w-5 mb-2 opacity-80" />
