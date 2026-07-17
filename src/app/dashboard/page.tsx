@@ -24,7 +24,6 @@ import {
   getAccuracy,
   getRecentResults,
   getThisWeekStats,
-  getWeeklyGoal,
   type StudentProgress,
 } from "@/lib/progress";
 import { subjects } from "@/data/subjects";
@@ -76,18 +75,28 @@ export default function DashboardPage() {
   const [aiTasks, setAiTasks] = useState<AISuggestion[]>([]);
   const [loadingTasks, setLoadingTasks] = useState(true);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [weeklyStats, setWeeklyStats] = useState({ questionsAttempted: 0, accuracy: 0, correctAnswers: 0 });
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const data = getProgressData();
-    setProgress(data);
-    
-    // Load user profile
-    const storedProfile = localStorage.getItem(USER_PROFILE_KEY);
-    if (storedProfile) {
-      setUserProfile(JSON.parse(storedProfile));
+    setMounted(true);
+    try {
+      const data = getProgressData();
+      setProgress(data);
+      
+      const storedProfile = localStorage.getItem(USER_PROFILE_KEY);
+      if (storedProfile) {
+        setUserProfile(JSON.parse(storedProfile));
+      }
+      
+      const stats = getThisWeekStats();
+      setWeeklyStats(stats);
+      
+      fetchSuggestions(data);
+    } catch (e) {
+      console.error("Dashboard init error:", e);
+      setLoadingTasks(false);
     }
-    
-    fetchSuggestions(data);
   }, []);
 
   const fetchSuggestions = async (progressData: StudentProgress) => {
@@ -131,6 +140,17 @@ export default function DashboardPage() {
   };
 
   const daysUntilExam = getDaysUntilExam();
+
+  if (!mounted) {
+    return (
+      <div className="p-6 max-w-7xl mx-auto">
+        <div className="mb-8">
+          <div className="h-8 bg-gray-200 dark:bg-gray-800 rounded w-48 mb-2 animate-pulse" />
+          <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded w-96 animate-pulse" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
@@ -189,13 +209,13 @@ export default function DashboardPage() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
             <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-              {getThisWeekStats().questionsAttempted}
+              {weeklyStats.questionsAttempted}
             </p>
             <p className="text-sm text-gray-600 dark:text-gray-400">Questions This Week</p>
           </div>
           <div className="text-center p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl">
             <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
-              {getThisWeekStats().accuracy}%
+              {weeklyStats.accuracy}%
             </p>
             <p className="text-sm text-gray-600 dark:text-gray-400">Weekly Accuracy</p>
           </div>
