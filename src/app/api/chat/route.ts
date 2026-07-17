@@ -1,12 +1,12 @@
 import { NextRequest } from "next/server";
 import { groq, MODEL } from "@/lib/gemini";
-import { getSystemPrompt } from "@/lib/prompts";
+import { getSystemPrompt, type Language, type Level } from "@/lib/prompts";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest) {
   try {
-    const { message, subject, history } = await request.json();
+    const { message, subject, history, language, level } = await request.json();
 
     const API_KEY = process.env.NEXT_PUBLIC_GROQ_API_KEY;
     if (!API_KEY) {
@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     }
 
     const messages: Array<{ role: "system" | "user" | "assistant"; content: string }> = [
-      { role: "system", content: getSystemPrompt(subject || "general") },
+      { role: "system", content: getSystemPrompt(subject || "general", (language as Language) || "en", (level as Level) || "intermediate") },
       ...(history || []).map((h: { role: string; parts: string }) => ({
         role: h.role === "user" ? ("user" as const) : ("assistant" as const),
         content: h.parts,
