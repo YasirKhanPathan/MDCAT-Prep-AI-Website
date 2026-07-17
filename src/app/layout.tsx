@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
+import Sidebar from "@/components/Sidebar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,14 +26,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100`}
       >
-        <Navbar />
-        <main className="flex-1">{children}</main>
-        <footer className="border-t border-gray-200 dark:border-gray-800 py-6 text-center text-sm text-gray-500">
-          <p>MDCAT Prep AI &copy; {new Date().getFullYear()} | Built for Pakistani Medical Students</p>
+        <div className="flex min-h-screen">
+          <Sidebar />
+          <main className="flex-1 min-h-screen">
+            {children}
+          </main>
+        </div>
+        <footer className="border-t border-gray-200 dark:border-gray-800 py-4 text-center text-xs text-gray-500 ml-0 lg:ml-16">
+          <p>MedPrep AI &copy; {new Date().getFullYear()} | Built for Pakistani Medical Students</p>
         </footer>
       </body>
     </html>
