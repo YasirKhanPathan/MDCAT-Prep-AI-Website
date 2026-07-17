@@ -13,7 +13,7 @@ An AI-powered MDCAT preparation platform for Pakistani medical students. Practic
 ## Tech Stack
 
 - **Frontend**: Next.js 16 (App Router) + React + TypeScript + Tailwind CSS
-- **AI Backend**: Google Gemini API (free tier)
+- **AI Backend**: Groq API (LLaMA 3.1 8B - free tier)
 - **Charts**: Recharts
 - **Icons**: Lucide React
 - **Storage**: localStorage for progress tracking
@@ -31,12 +31,12 @@ cd MedPrep-AI
 npm install
 ```
 
-3. Create `.env.local` file and add your Gemini API key:
+3. Create `.env.local` file and add your Groq API key:
 ```
-NEXT_PUBLIC_GEMINI_API_KEY=your_gemini_api_key_here
+NEXT_PUBLIC_GROQ_API_KEY=your_groq_api_key_here
 ```
 
-> Get a free API key from [Google AI Studio](https://aistudio.google.com/apikey)
+> Get a free API key from [Groq Console](https://console.groq.com)
 
 4. Run the development server:
 ```bash

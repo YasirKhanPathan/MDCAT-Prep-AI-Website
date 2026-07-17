@@ -1,36 +1,37 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import OpenAI from "openai";
 
-const API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY || "";
+const API_KEY = process.env.NEXT_PUBLIC_GROQ_API_KEY || "";
 
-export const genAI = new GoogleGenerativeAI(API_KEY);
+export const groq = new OpenAI({
+  apiKey: API_KEY,
+  baseURL: "https://api.groq.com/openai/v1",
+});
 
-export function getModel() {
-  return genAI.getGenerativeModel({
-    model: "gemini-2.0-flash",
-    generationConfig: {
-      temperature: 0.7,
-      topP: 0.9,
-      topK: 40,
-      maxOutputTokens: 2048,
-    },
-  });
-}
+export const MODEL = "llama-3.1-8b-instant";
 
 export async function generateChatResponse(
   message: string,
   subjectContext: string,
   history: Array<{ role: string; parts: string }> = []
 ) {
-  const model = getModel();
-  const chat = model.startChat({
-    history: history.map((h) => ({
-      role: h.role as "user" | "model",
-      parts: [{ text: h.parts }],
+  const messages: Array<{ role: "system" | "user" | "assistant"; content: string }> = [
+    { role: "system", content: subjectContext },
+    ...history.map((h) => ({
+      role: h.role === "user" ? ("user" as const) : ("assistant" as const),
+      content: h.parts,
     })),
+    { role: "user", content: message },
+  ];
+
+  const response = await groq.chat.completions.create({
+    model: MODEL,
+    messages,
+    temperature: 0.7,
+    max_tokens: 2048,
+    top_p: 0.9,
   });
 
-  const result = await chat.sendMessage(message);
-  return result.response.text();
+  return response.choices[0]?.message?.content || "No response generated.";
 }
 
 export async function generateMCQs(
@@ -40,7 +41,6 @@ export async function generateMCQs(
   count: number = 10,
   difficulty: string = "medium"
 ) {
-  const model = getModel();
   const prompt = `Generate ${count} MDCAT-style multiple choice questions for the following topic:
 Subject: ${subject}
 Topic: ${topic}
@@ -65,8 +65,15 @@ Requirements:
 - Mix of easy, medium, and hard questions appropriate for MDCAT
 - Do NOT include any text before or after the JSON array`;
 
-  const result = await model.generateContent(prompt);
-  const text = result.response.text();
+  const response = await groq.chat.completions.create({
+    model: MODEL,
+    messages: [{ role: "user", content: prompt }],
+    temperature: 0.7,
+    max_tokens: 4096,
+    top_p: 0.9,
+  });
+
+  const text = response.choices[0]?.message?.content || "";
 
   try {
     const jsonMatch = text.match(/\[[\s\S]*\]/);

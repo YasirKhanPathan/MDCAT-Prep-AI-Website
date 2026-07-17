@@ -7,10 +7,10 @@ export async function POST(request: NextRequest) {
   try {
     const { subject, topic, subtopic, count, difficulty } = await request.json();
 
-    const API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+    const API_KEY = process.env.NEXT_PUBLIC_GROQ_API_KEY;
     if (!API_KEY) {
       return Response.json(
-        { error: "Gemini API key not configured" },
+        { error: "Groq API key not configured" },
         { status: 500 }
       );
     }
