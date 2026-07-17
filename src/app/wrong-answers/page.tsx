@@ -1,41 +1,95 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getWrongAnswers, clearWrongAnswer, clearAllWrongAnswers, type WrongAnswer } from "@/lib/progress";
 import { subjects } from "@/data/subjects";
 import { AlertTriangle, CheckCircle, XCircle, Trash2, Filter } from "lucide-react";
 
+interface WrongAnswer {
+  id: string;
+  date: string;
+  subject: string;
+  topic: string;
+  question: string;
+  options: string[];
+  selectedAnswer: number;
+  correctAnswer: number;
+  explanation: string;
+}
+
+const STORAGE_KEY = "mdcat-progress";
+
+function getWrongAnswersFromStorage(): WrongAnswer[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (!stored) return [];
+    const progress = JSON.parse(stored);
+    return progress.wrongAnswers || [];
+  } catch {
+    return [];
+  }
+}
+
+function removeWrongAnswer(id: string) {
+  if (typeof window === "undefined") return;
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (!stored) return;
+    const progress = JSON.parse(stored);
+    progress.wrongAnswers = (progress.wrongAnswers || []).filter((w: WrongAnswer) => w.id !== id);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+  } catch {}
+}
+
+function clearAllWrongAnswersFromStorage() {
+  if (typeof window === "undefined") return;
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (!stored) return;
+    const progress = JSON.parse(stored);
+    progress.wrongAnswers = [];
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+  } catch {}
+}
+
 const subjectColors: Record<string, string> = {
-  biology: "#10b981", chemistry: "#3b82f6", physics: "#f59e0b", english: "#8b5cf6", "logical-reasoning": "#ef4444", "mock-exam": "#6b7280",
+  biology: "#10b981", chemistry: "#3b82f6", physics: "#f59e0b", english: "#8b5cf6", "logical-reasoning": "#ef4444",
 };
 
 export default function WrongAnswersPage() {
   const [wrongAnswers, setWrongAnswers] = useState<WrongAnswer[]>([]);
-  const [filterSubject, setFilterSubject] = useState<string>("all");
+  const [filterSubject, setFilterSubject] = useState("all");
   const [showConfirmClear, setShowConfirmClear] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setWrongAnswers(getWrongAnswers());
+    setMounted(true);
+    setWrongAnswers(getWrongAnswersFromStorage());
   }, []);
 
   const filtered = filterSubject === "all" ? wrongAnswers : wrongAnswers.filter((w) => w.subject === filterSubject);
 
   const handleRemove = (id: string) => {
-    clearWrongAnswer(id);
+    removeWrongAnswer(id);
     setWrongAnswers((prev) => prev.filter((w) => w.id !== id));
   };
 
   const handleClearAll = () => {
-    clearAllWrongAnswers();
+    clearAllWrongAnswersFromStorage();
     setWrongAnswers([]);
     setShowConfirmClear(false);
   };
 
-  const groupedBySubject = filtered.reduce((acc, wa) => {
-    if (!acc[wa.subject]) acc[wa.subject] = [];
-    acc[wa.subject].push(wa);
-    return acc;
-  }, {} as Record<string, WrongAnswer[]>);
+  if (!mounted) {
+    return (
+      <div className="p-6 max-w-5xl mx-auto">
+        <div className="animate-pulse space-y-4">
+          <div className="h-8 bg-gray-200 dark:bg-gray-800 rounded w-64" />
+          <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded w-96" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 max-w-5xl mx-auto">
@@ -66,7 +120,6 @@ export default function WrongAnswersPage() {
         </div>
       )}
 
-      {/* Filter */}
       <div className="flex items-center gap-3 mb-6">
         <Filter className="h-4 w-4 text-gray-500" />
         <select
@@ -88,7 +141,13 @@ export default function WrongAnswersPage() {
         </div>
       ) : (
         <div className="space-y-6">
-          {Object.entries(groupedBySubject).map(([subject, answers]) => (
+          {Object.entries(
+            filtered.reduce((acc, wa) => {
+              if (!acc[wa.subject]) acc[wa.subject] = [];
+              acc[wa.subject].push(wa);
+              return acc;
+            }, {} as Record<string, WrongAnswer[]>)
+          ).map(([subject, answers]) => (
             <div key={subject}>
               <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full" style={{ backgroundColor: subjectColors[subject] || "#6b7280" }} />
