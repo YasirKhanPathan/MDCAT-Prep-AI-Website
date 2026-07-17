@@ -13,10 +13,12 @@ interface ProgressData {
 
 export async function POST(request: NextRequest) {
   try {
-    const { progress, roadmapProgress, language } = (await request.json()) as {
+    const { progress, roadmapProgress, language, weakSubjects, level } = (await request.json()) as {
       progress: ProgressData;
       roadmapProgress: Record<string, boolean>;
       language: string;
+      weakSubjects: string[];
+      level: string;
     };
 
     const API_KEY = process.env.NEXT_PUBLIC_GROQ_API_KEY;
@@ -50,13 +52,16 @@ Student Progress:
 - Overall accuracy: ${progress.totalQuestionsAttempted ? Math.round((progress.totalCorrectAnswers / progress.totalQuestionsAttempted) * 100) : 0}%
 - Study streak: ${progress.studyStreak || 0} days
 - Roadmap progress: ${completedDays}/28 days completed
+- Student level: ${level || "intermediate"}
 ${weakAreas.length > 0 ? `- Weak areas (low accuracy): ${weakAreas.map((w) => `${w.topic} (${w.accuracy}%)`).join(", ")}` : "- No weak areas identified yet (need more data)"}
+${weakSubjects && weakSubjects.length > 0 ? `- Student's self-identified weak subjects: ${weakSubjects.join(", ")}. Prioritize these subjects in task generation.` : ""}
 
 Generate exactly 5 personalized daily tasks for today. Each task should be:
 1. Specific and actionable
 2. Based on their weak areas and roadmap position
 3. Include estimated time
 4. Mix of: studying concepts, practicing MCQs, and reviewing
+5. Prioritize the student's self-identified weak subjects
 
 Return ONLY a JSON array:
 [

@@ -191,3 +191,67 @@ export function clearAllWrongAnswers() {
   progress.wrongAnswers = [];
   saveProgress(progress);
 }
+
+export function getWeeklyStats(weeksBack: number = 4): Array<{
+  weekStart: string;
+  questionsAttempted: number;
+  accuracy: number;
+  correctAnswers: number;
+}> {
+  const progress = getProgress();
+  const now = new Date();
+  const weeks: Array<{
+    weekStart: string;
+    questionsAttempted: number;
+    accuracy: number;
+    correctAnswers: number;
+  }> = [];
+
+  for (let i = 0; i < weeksBack; i++) {
+    const weekStart = new Date(now);
+    weekStart.setDate(now.getDate() - (i * 7 + 6));
+    weekStart.setHours(0, 0, 0, 0);
+    
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekStart.getDate() + 6);
+    weekEnd.setHours(23, 59, 59, 999);
+
+    const weekResults = progress.quizResults.filter(result => {
+      const resultDate = new Date(result.date);
+      return resultDate >= weekStart && resultDate <= weekEnd;
+    });
+
+    const questionsAttempted = weekResults.reduce((sum, r) => sum + r.totalQuestions, 0);
+    const correctAnswers = weekResults.reduce((sum, r) => sum + r.correctAnswers, 0);
+    const accuracy = questionsAttempted > 0 ? Math.round((correctAnswers / questionsAttempted) * 100) : 0;
+
+    weeks.unshift({
+      weekStart: weekStart.toISOString().split('T')[0],
+      questionsAttempted,
+      accuracy,
+      correctAnswers,
+    });
+  }
+
+  return weeks;
+}
+
+export function getThisWeekStats(): {
+  questionsAttempted: number;
+  accuracy: number;
+  correctAnswers: number;
+} {
+  const weeklyStats = getWeeklyStats(1);
+  return weeklyStats[0] || { questionsAttempted: 0, accuracy: 0, correctAnswers: 0 };
+}
+
+export function getWeeklyGoal(): { questionsTarget: number; accuracyTarget: number } | null {
+  if (typeof window === "undefined") return null;
+  const stored = localStorage.getItem("mdcat-weekly-goal");
+  return stored ? JSON.parse(stored) : null;
+}
+
+export function setWeeklyGoal(questionsTarget: number, accuracyTarget: number) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem("mdcat-weekly-goal", JSON.stringify({ questionsTarget, accuracyTarget }));
+}

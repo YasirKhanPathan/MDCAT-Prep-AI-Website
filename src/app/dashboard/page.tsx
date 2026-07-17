@@ -17,14 +17,25 @@ import {
   BookOpen,
   CheckCircle2,
   Zap,
+  Calendar,
 } from "lucide-react";
 import {
   getProgressData,
   getAccuracy,
   getRecentResults,
+  getThisWeekStats,
+  getWeeklyGoal,
   type StudentProgress,
 } from "@/lib/progress";
 import { subjects } from "@/data/subjects";
+
+interface UserProfile {
+  name: string;
+  level: string;
+  weakSubjects: string[];
+  examDate: string;
+  dailyHours: number;
+}
 
 interface AISuggestion {
   task: string;
@@ -35,6 +46,7 @@ interface AISuggestion {
 }
 
 const ROADMAP_STORAGE_KEY = "mdcat-roadmap-progress";
+const USER_PROFILE_KEY = "mdcat-user-profile";
 
 const iconMap: Record<string, string> = {
   biology: "🧬",
@@ -63,10 +75,18 @@ export default function DashboardPage() {
   const [progress, setProgress] = useState<StudentProgress | null>(null);
   const [aiTasks, setAiTasks] = useState<AISuggestion[]>([]);
   const [loadingTasks, setLoadingTasks] = useState(true);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
 
   useEffect(() => {
     const data = getProgressData();
     setProgress(data);
+    
+    // Load user profile
+    const storedProfile = localStorage.getItem(USER_PROFILE_KEY);
+    if (storedProfile) {
+      setUserProfile(JSON.parse(storedProfile));
+    }
+    
     fetchSuggestions(data);
   }, []);
 
@@ -74,10 +94,19 @@ export default function DashboardPage() {
     try {
       const roadmapProgress = JSON.parse(localStorage.getItem(ROADMAP_STORAGE_KEY) || "{}");
       const lang = localStorage.getItem("mdcat-chat-language") || "en";
+      const profile = localStorage.getItem(USER_PROFILE_KEY);
+      const userProfileData = profile ? JSON.parse(profile) : null;
+      
       const res = await fetch("/api/suggest-tasks", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ progress: progressData, roadmapProgress, language: lang }),
+        body: JSON.stringify({ 
+          progress: progressData, 
+          roadmapProgress, 
+          language: lang,
+          weakSubjects: userProfileData?.weakSubjects || [],
+          level: userProfileData?.level || "intermediate"
+        }),
       });
       const data = await res.json();
       setAiTasks(data.tasks || []);
@@ -91,18 +120,44 @@ export default function DashboardPage() {
   const accuracy = progress ? getAccuracy() : 0;
   const recentResults = progress ? getRecentResults(5) : [];
 
+  // Calculate exam countdown
+  const getDaysUntilExam = () => {
+    if (!userProfile?.examDate) return null;
+    const examDate = new Date(userProfile.examDate);
+    const today = new Date();
+    const diffTime = examDate.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays > 0 ? diffDays : 0;
+  };
+
+  const daysUntilExam = getDaysUntilExam();
+
   return (
     <div className="p-6 max-w-7xl mx-auto">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Dashboard</h1>
+        <h1 className="text-3xl font-bold mb-2">
+          {userProfile?.name ? `Welcome back, ${userProfile.name}!` : 'Dashboard'}
+        </h1>
         <p className="text-gray-600 dark:text-gray-400">
-          Welcome back! Here&apos;s your MDCAT preparation overview.
+          {daysUntilExam !== null 
+            ? `${daysUntilExam} days until your MDCAT exam. Keep pushing!`
+            : "Here's your MDCAT preparation overview."
+          }
         </p>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+        {/* Exam Countdown Card */}
+        {daysUntilExam !== null && (
+          <div className="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl p-5 text-white">
+            <Calendar className="h-5 w-5 mb-2 opacity-80" />
+            <p className="text-2xl font-bold">{daysUntilExam}</p>
+            <p className="text-sm opacity-80">Days Until Exam</p>
+          </div>
+        )}
+        
         <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-5">
           <Target className="h-5 w-5 text-emerald-500 mb-2" />
           <p className="text-2xl font-bold">{progress?.totalQuestionsAttempted || 0}</p>
@@ -122,6 +177,40 @@ export default function DashboardPage() {
           <Flame className="h-5 w-5 text-red-500 mb-2" />
           <p className="text-2xl font-bold">{progress?.studyStreak || 0}</p>
           <p className="text-sm text-gray-500">Day Streak</p>
+        </div>
+      </div>
+
+      {/* Weekly Summary Card */}
+      <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 mb-8">
+        <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+          <TrendingUp className="h-5 w-5 text-blue-500" />
+          This Week&apos;s Progress
+        </h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
+            <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+              {getThisWeekStats().questionsAttempted}
+            </p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Questions This Week</p>
+          </div>
+          <div className="text-center p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl">
+            <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+              {getThisWeekStats().accuracy}%
+            </p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Weekly Accuracy</p>
+          </div>
+          <div className="text-center p-4 bg-purple-50 dark:bg-purple-900/20 rounded-xl">
+            <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+              {progress?.wrongAnswers.length || 0}
+            </p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Wrong Answers to Review</p>
+          </div>
+          <div className="text-center p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl">
+            <p className="text-2xl font-bold text-amber-600 dark:text-amber-400">
+              {progress?.studyStreak || 0}
+            </p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Day Streak</p>
+          </div>
         </div>
       </div>
 

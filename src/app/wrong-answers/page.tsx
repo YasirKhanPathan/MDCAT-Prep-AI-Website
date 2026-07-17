@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { subjects } from "@/data/subjects";
-import { AlertTriangle, CheckCircle, XCircle, Trash2, Filter } from "lucide-react";
+import { AlertTriangle, CheckCircle, XCircle, Trash2, Filter, RotateCcw } from "lucide-react";
 
 interface WrongAnswer {
   id: string;
@@ -57,6 +58,7 @@ const subjectColors: Record<string, string> = {
 };
 
 export default function WrongAnswersPage() {
+  const router = useRouter();
   const [wrongAnswers, setWrongAnswers] = useState<WrongAnswer[]>([]);
   const [filterSubject, setFilterSubject] = useState("all");
   const [showConfirmClear, setShowConfirmClear] = useState(false);
@@ -100,14 +102,24 @@ export default function WrongAnswersPage() {
             Review all incorrectly answered questions — {wrongAnswers.length} total
           </p>
         </div>
-        {wrongAnswers.length > 0 && (
-          <button
-            onClick={() => setShowConfirmClear(true)}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors"
-          >
-            <Trash2 className="h-4 w-4" /> Clear All
-          </button>
-        )}
+        <div className="flex items-center gap-3">
+          {wrongAnswers.length > 0 && (
+            <button
+              onClick={() => router.push('/wrong-answers/retest')}
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
+            >
+              <RotateCcw className="h-4 w-4" /> Re-Test Wrong Answers
+            </button>
+          )}
+          {wrongAnswers.length > 0 && (
+            <button
+              onClick={() => setShowConfirmClear(true)}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors"
+            >
+              <Trash2 className="h-4 w-4" /> Clear All
+            </button>
+          )}
+        </div>
       </div>
 
       {showConfirmClear && (

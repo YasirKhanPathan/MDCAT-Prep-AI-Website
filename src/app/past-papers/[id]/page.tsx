@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { getPastPaperById, type PastPaper, type PastPaperQuestion } from "@/data/pastPapers";
+import { recordQuizResult, recordWrongAnswer } from "@/lib/progress";
 import { Clock, ArrowLeft, CheckCircle, XCircle, AlertCircle, Trophy, RotateCcw } from "lucide-react";
 
 interface Answer {
@@ -112,7 +113,40 @@ export default function PastPaperPage() {
   const handleSubmit = useCallback(() => {
     setQuizState(prev => ({ ...prev, isSubmitted: true }));
     setShowResults(true);
-  }, []);
+
+    // Record progress
+    if (paper) {
+      const timeSpent = paper.timeLimit * 60 - quizState.timeRemaining;
+      let correctCount = 0;
+      
+      paper.questions.forEach((question, index) => {
+        const answer = quizState.answers[index];
+        if (answer.selectedOption === question.correctIndex) {
+          correctCount++;
+        } else {
+          // Record wrong answer
+          recordWrongAnswer({
+            subject: question.subject,
+            topic: question.topic,
+            question: question.question,
+            options: question.options,
+            selectedAnswer: answer.selectedOption ?? -1,
+            correctAnswer: question.correctIndex,
+            explanation: question.explanation,
+          });
+        }
+      });
+
+      recordQuizResult({
+        subject: "Mixed",
+        topic: paper.title,
+        totalQuestions: paper.questions.length,
+        correctAnswers: correctCount,
+        difficulty: "mixed",
+        timeSpent,
+      });
+    }
+  }, [paper, quizState.answers, quizState.timeRemaining]);
 
   const handleRetake = () => {
     if (!paper) return;

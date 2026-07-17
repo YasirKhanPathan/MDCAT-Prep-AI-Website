@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { subjects, getSubjectById } from "@/data/subjects";
@@ -8,6 +8,7 @@ import {
   Target,
   ChevronRight,
   BarChart3,
+  Clock,
 } from "lucide-react";
 import MCQCard, { Question } from "@/components/MCQCard";
 import { recordQuizResult, recordWrongAnswer } from "@/lib/progress";
@@ -29,12 +30,39 @@ export default function PracticePageContent() {
   const [showExplanations, setShowExplanations] = useState<boolean[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [quizResult, setQuizResult] = useState<{ correct: number; total: number; percentage: number } | null>(null);
+  
+  // Timer state
+  const [examMode, setExamMode] = useState(false);
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const [timerActive, setTimerActive] = useState(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (urlSubject && subjects.some((s) => s.id === urlSubject)) {
       setSelectedSubject(urlSubject);
     }
   }, [urlSubject]);
+
+  // Timer effect
+  useEffect(() => {
+    if (timerActive && phase === "quiz") {
+      timerRef.current = setInterval(() => {
+        setElapsedTime(prev => prev + 1);
+      }, 1000);
+    }
+
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, [timerActive, phase]);
+
+  const formatTime = useCallback((seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  }, []);
 
   const subject = getSubjectById(selectedSubject);
   const topic = subject?.topics.find((t) => t.id === selectedTopic);
@@ -62,6 +90,12 @@ export default function PracticePageContent() {
       setAnswers(Array.from({ length: data.questions.length }));
       setShowExplanations(new Array(data.questions.length).fill(false));
       setPhase("quiz");
+      
+      // Start timer if exam mode is enabled
+      if (examMode) {
+        setElapsedTime(0);
+        setTimerActive(true);
+      }
     } catch {
       alert("Failed to generate questions. Make sure your API key is set correctly.");
       setPhase("setup");
@@ -92,6 +126,12 @@ export default function PracticePageContent() {
   };
 
   const handleFinish = () => {
+    // Stop timer
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+    setTimerActive(false);
+
     const correctCount = questions.filter(
       (q, i) => answers[i] === q.correctIndex
     ).length;
@@ -104,7 +144,7 @@ export default function PracticePageContent() {
       totalQuestions: questions.length,
       correctAnswers: correctCount,
       difficulty,
-      timeSpent: 0,
+      timeSpent: elapsedTime,
     });
 
     setQuizResult({ correct: correctCount, total: questions.length, percentage });
@@ -118,6 +158,13 @@ export default function PracticePageContent() {
   };
 
   const handleReset = () => {
+    // Stop timer
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+    setTimerActive(false);
+    setElapsedTime(0);
+    
     setPhase("setup");
     setSelectedTopic("");
     setSelectedSubtopic("");
@@ -129,6 +176,13 @@ export default function PracticePageContent() {
   };
 
   const handleNewQuiz = () => {
+    // Stop timer
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+    setTimerActive(false);
+    setElapsedTime(0);
+    
     setPhase("setup");
     setSelectedSubject("");
     setSelectedTopic("");
@@ -195,6 +249,17 @@ export default function PracticePageContent() {
   if (phase === "quiz") {
     return (
       <div className="max-w-3xl mx-auto px-4 py-8">
+        {/* Timer Display */}
+        {examMode && (
+          <div className="mb-4 flex items-center justify-center gap-2 p-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
+            <Clock className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+            <span className="font-mono text-lg font-bold text-blue-600 dark:text-blue-400">
+              {formatTime(elapsedTime)}
+            </span>
+            <span className="text-sm text-blue-600/70 dark:text-blue-400/70">elapsed</span>
+          </div>
+        )}
+
         <div className="mb-6">
           <div className="flex justify-between text-sm text-gray-500 mb-2">
             <span>
@@ -406,6 +471,36 @@ export default function PracticePageContent() {
               ))}
             </div>
           </div>
+        </div>
+
+        {/* Exam Mode Toggle */}
+        <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="font-medium text-blue-800 dark:text-blue-200">Exam Mode</h3>
+              <p className="text-sm text-blue-600/70 dark:text-blue-400/70">
+                Enable timer to practice under exam conditions ({questionCount} min)
+              </p>
+            </div>
+            <button
+              onClick={() => setExamMode(!examMode)}
+              className={`relative w-12 h-6 rounded-full transition-colors ${
+                examMode ? "bg-blue-600" : "bg-gray-300 dark:bg-gray-600"
+              }`}
+            >
+              <div
+                className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${
+                  examMode ? "translate-x-7" : "translate-x-1"
+                }`}
+              />
+            </button>
+          </div>
+          {examMode && (
+            <div className="mt-3 flex items-center gap-2 text-sm text-blue-700 dark:text-blue-300">
+              <Clock className="h-4 w-4" />
+              <span>Timer will start when you begin the quiz</span>
+            </div>
+          )}
         </div>
 
         <button
