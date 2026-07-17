@@ -51,7 +51,7 @@ export default function PracticePage() {
       if (!res.ok) throw new Error("Failed to generate questions");
       const data = await res.json();
       setQuestions(data.questions);
-      setAnswers(new Array(data.questions.length).undefined);
+      setAnswers(Array.from({ length: data.questions.length }));
       setShowExplanations(new Array(data.questions.length).fill(false));
       setPhase("quiz");
     } catch {
