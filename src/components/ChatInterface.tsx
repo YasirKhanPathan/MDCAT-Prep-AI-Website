@@ -1,9 +1,17 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
-import { Send, Bot, User, Loader2, BookOpen, Trash2, Globe, GraduationCap } from "lucide-react";
+import { Send, Bot, User, Loader2, BookOpen, Trash2, Globe, GraduationCap, Mic, MicOff, Volume2, VolumeX } from "lucide-react";
 import { subjects } from "@/data/subjects";
+import {
+  isSpeechRecognitionSupported,
+  isSpeechSynthesisSupported,
+  startListening,
+  stopListening,
+  speakText,
+  stopSpeaking,
+} from "@/lib/speech";
 
 interface Message {
   role: "user" | "assistant";
@@ -47,11 +55,25 @@ export default function ChatInterface() {
   const [initialized, setInitialized] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // STT state
+  const [isRecording, setIsRecording] = useState(false);
+  const [sttSupported, setSttSupported] = useState(false);
+  const [sttError, setSttError] = useState<string | null>(null);
+
+  // TTS state
+  const [speakingMessageId, setSpeakingMessageId] = useState<number | null>(null);
+  const [ttsSupported, setTtsSupported] = useState(false);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => { scrollToBottom(); }, [messages]);
+
+  useEffect(() => {
+    setSttSupported(isSpeechRecognitionSupported());
+    setTtsSupported(isSpeechSynthesisSupported());
+  }, []);
 
   useEffect(() => {
     if (initialized) return;
@@ -74,7 +96,7 @@ export default function ChatInterface() {
     } else {
       setMessages([{
         role: "assistant",
-        content: "Salam! I'm your AI MDCAT tutor. I can help you with any subject:\n\n🧬 **Biology** - Cell biology, genetics, ecology\n⚗️ **Chemistry** - Organic, inorganic, physical\n⚡ **Physics** - Mechanics, waves, electricity\n📝 **English** - Comprehension, grammar, vocabulary\n🧠 **Logical Reasoning** - Series, analogies, coding\n\nWhat would you like to study today?",
+        content: "Salam! I'm your AI MDCAT tutor. I can help you with any subject:\n\n🧬 **Biology** - Cell biology, genetics, ecology\n⚗️ **Chemistry** - Organic, inorganic, physical\n⚡ **Physics** - Mechanics, waves, electricity\n📝 **English** - Comprehension, grammar, vocabulary\n🧠 **Logical Reasoning** - Series, analogies, coding\n\nYou can type or use the microphone to ask questions!",
       }]);
     }
     setInitialized(true);
@@ -141,6 +163,67 @@ export default function ChatInterface() {
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSubmit(e); }
   };
+
+  // STT handlers
+  const handleToggleRecording = useCallback(() => {
+    if (isRecording) {
+      stopListening();
+      setIsRecording(false);
+      return;
+    }
+
+    setSttError(null);
+
+    startListening(
+      language,
+      (transcript, isFinal) => {
+        if (isFinal) {
+          setInput((prev) => {
+            const newInput = prev ? `${prev} ${transcript}` : transcript;
+            return newInput;
+          });
+        } else {
+          setInput(transcript);
+        }
+      },
+      () => {
+        setIsRecording(false);
+      },
+      (error) => {
+        setSttError(error);
+        setIsRecording(false);
+      }
+    );
+
+    setIsRecording(true);
+  }, [isRecording, language]);
+
+  // TTS handlers
+  const handleSpeak = useCallback(
+    (messageIndex: number, text: string) => {
+      if (speakingMessageId === messageIndex) {
+        stopSpeaking();
+        setSpeakingMessageId(null);
+        return;
+      }
+
+      stopSpeaking();
+      setSpeakingMessageId(messageIndex);
+      speakText(text, language, () => {
+        setSpeakingMessageId(null);
+      });
+    },
+    [speakingMessageId, language]
+  );
+
+  // Stop TTS when component unmounts
+  useEffect(() => {
+    return () => {
+      if (typeof window !== "undefined" && window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
 
   const currentSubject = subjects.find((s) => s.id === selectedSubject);
 
@@ -237,6 +320,26 @@ export default function ChatInterface() {
                   return <p key={i}>{line || <br />}</p>;
                 })}
               </div>
+              {/* TTS button for assistant messages */}
+              {message.role === "assistant" && ttsSupported && (
+                <div className="mt-2 flex justify-end">
+                  <button
+                    onClick={() => handleSpeak(index, message.content)}
+                    aria-label={speakingMessageId === index ? "Stop reading aloud" : "Read this response aloud"}
+                    className={`p-1 rounded-lg transition-colors ${
+                      speakingMessageId === index
+                        ? "text-emerald-500 bg-emerald-50 dark:bg-emerald-950/30"
+                        : "text-gray-400 hover:text-emerald-500 hover:bg-gray-200 dark:hover:bg-gray-700"
+                    }`}
+                  >
+                    {speakingMessageId === index ? (
+                      <VolumeX className="h-4 w-4 animate-pulse" />
+                    ) : (
+                      <Volume2 className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
+              )}
             </div>
             {message.role === "user" && (
               <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-700 flex items-center justify-center">
@@ -260,21 +363,55 @@ export default function ChatInterface() {
 
       {/* Input */}
       <div className="border-t border-gray-200 dark:border-gray-800 p-4">
-        <form onSubmit={handleSubmit} className="flex gap-3">
+        {/* STT Error */}
+        {sttError && (
+          <div className="mb-2 p-2 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 text-xs flex items-center gap-2">
+            <MicOff className="h-3 w-3 flex-shrink-0" />
+            <span>{sttError}</span>
+            <button onClick={() => setSttError(null)} className="ml-auto hover:text-red-900 dark:hover:text-red-100">&times;</button>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="flex gap-3 items-end">
+          {/* Microphone Button */}
+          {sttSupported && (
+            <button
+              type="button"
+              onClick={handleToggleRecording}
+              disabled={isLoading}
+              aria-label={isRecording ? "Stop voice input" : "Start voice input"}
+              className={`flex-shrink-0 p-3 rounded-xl transition-all ${
+                isRecording
+                  ? "bg-red-500 hover:bg-red-600 text-white animate-pulse"
+                  : "bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400"
+              } disabled:opacity-50 disabled:cursor-not-allowed`}
+            >
+              {isRecording ? <MicOff className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
+            </button>
+          )}
+
+          {/* Textarea */}
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             aria-label="Type your question"
             placeholder={
+              isRecording ? "Listening..." :
               language === "ur" ? "اپنا سوال یہاں لکھیں..." :
               language === "roman" ? "Apna sawal yahan likhein..." :
               "Ask a question about any MDCAT topic..."
             }
-            className="flex-1 resize-none rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+            className={`flex-1 resize-none rounded-xl border bg-white dark:bg-gray-900 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent ${
+              isRecording
+                ? "border-red-300 dark:border-red-700 ring-2 ring-red-200 dark:ring-red-900"
+                : "border-gray-300 dark:border-gray-700"
+            }`}
             rows={1}
             disabled={isLoading}
           />
+
+          {/* Send Button */}
           <button
             type="submit"
             disabled={isLoading || !input.trim()}
@@ -283,6 +420,14 @@ export default function ChatInterface() {
             <Send className="h-5 w-5" />
           </button>
         </form>
+
+        {/* Voice status indicator */}
+        {isRecording && (
+          <div className="mt-2 flex items-center gap-2 text-xs text-red-500" role="status" aria-live="polite">
+            <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+            <span>Recording... Click the microphone to stop</span>
+          </div>
+        )}
       </div>
     </div>
   );
