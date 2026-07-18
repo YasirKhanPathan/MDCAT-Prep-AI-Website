@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+
+Sitemap: https://medprep-ai.22.jugaar.ai/sitemap.xml

@@ -202,8 +202,8 @@ export default function ChatInterface() {
           </div>
           <button
             onClick={handleClearChat}
+            aria-label="Clear chat history"
             className="ml-auto p-1.5 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors"
-            title="Clear chat"
           >
             <Trash2 className="h-4 w-4" />
           </button>
@@ -265,6 +265,7 @@ export default function ChatInterface() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
+            aria-label="Type your question"
             placeholder={
               language === "ur" ? "اپنا سوال یہاں لکھیں..." :
               language === "roman" ? "Apna sawal yahan likhein..." :

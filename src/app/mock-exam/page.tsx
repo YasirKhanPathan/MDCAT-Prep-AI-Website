@@ -22,24 +22,38 @@ export default function MockExamPage() {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<(number | undefined)[]>([]);
   const [currentQ, setCurrentQ] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(10800); // 3 hours
+  const [timeLeft, setTimeLeft] = useState(10800);
   const [showNav, setShowNav] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [confirmSubmit, setConfirmSubmit] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const handleTimeUp = useCallback(() => {
-    if (phase === "exam") handleSubmit();
-  }, [phase]);
+  const handleSubmit = useCallback(() => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    const correctCount = questions.filter((q, i) => answers[i] === q.correctIndex).length;
+    const pct = Math.round((correctCount / questions.length) * 100);
+
+    recordQuizResult({ subject: "mock-exam", topic: "MDCAT Full Length", totalQuestions: questions.length, correctAnswers: correctCount, difficulty: "hard", timeSpent: 10800 - timeLeft });
+
+    setPhase("results");
+  }, [questions, answers, timeLeft]);
 
   useEffect(() => {
     if (phase !== "exam" || timeLeft <= 0) return;
     timerRef.current = setInterval(() => {
       setTimeLeft((prev) => {
-        if (prev <= 1) { clearInterval(timerRef.current!); handleTimeUp(); return 0; }
+        if (prev <= 1) { clearInterval(timerRef.current!); return 0; }
         return prev - 1;
       });
     }, 1000);
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
-  }, [phase, timeLeft, handleTimeUp]);
+  }, [phase, timeLeft]);
+
+  useEffect(() => {
+    if (phase === "exam" && timeLeft === 0 && questions.length > 0) {
+      handleSubmit();
+    }
+  }, [phase, timeLeft, questions.length, handleSubmit]);
 
   const formatTime = (s: number) => {
     const h = Math.floor(s / 3600);
@@ -50,23 +64,29 @@ export default function MockExamPage() {
 
   const handleStart = async () => {
     setPhase("generating");
+    setError(null);
     try {
       const allQuestions: Question[] = [];
-      for (const dist of MDCAT_DISTRIBUTION) {
-        const res = await fetch("/api/generate-questions", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ subject: dist.subject, topic: dist.subject, subtopic: dist.subject, count: dist.count, difficulty: "mixed" }),
-        });
-        if (!res.ok) throw new Error(`Failed for ${dist.subject}`);
-        const data = await res.json();
+      const results = await Promise.all(
+        MDCAT_DISTRIBUTION.map((dist) =>
+          fetch("/api/generate-questions", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ subject: dist.subject, topic: dist.subject, subtopic: dist.subject, count: dist.count, difficulty: "mixed" }),
+          }).then((res) => {
+            if (!res.ok) throw new Error(`Failed for ${dist.subject}`);
+            return res.json();
+          })
+        )
+      );
+      for (const data of results) {
         allQuestions.push(...data.questions);
       }
       setQuestions(allQuestions);
       setAnswers(Array.from({ length: allQuestions.length }));
       setPhase("exam");
     } catch {
-      alert("Failed to generate exam. Please try again.");
+      setError("Failed to generate exam. Please try again.");
       setPhase("setup");
     }
   };
@@ -75,17 +95,6 @@ export default function MockExamPage() {
     const next = [...answers];
     next[qi] = si;
     setAnswers(next);
-  };
-
-  const handleSubmit = () => {
-    if (timerRef.current) clearInterval(timerRef.current);
-    const correctCount = questions.filter((q, i) => answers[i] === q.correctIndex).length;
-    const pct = Math.round((correctCount / questions.length) * 100);
-
-    recordQuizResult({ subject: "mock-exam", topic: "MDCAT Full Length", totalQuestions: questions.length, correctAnswers: correctCount, difficulty: "hard", timeSpent: 10800 - timeLeft });
-
-    setPhase("results");
-    setPhase("results");
   };
 
   const answeredCount = answers.filter((a) => a !== undefined).length;
@@ -137,7 +146,7 @@ export default function MockExamPage() {
           </div>
         </div>
 
-        <div className="flex gap-3 justify-center">
+        <div className="flex flex-wrap gap-3 justify-center">
           <button onClick={() => router.push("/dashboard")} className="px-6 py-3 rounded-xl border-2 border-gray-300 dark:border-gray-700 font-medium hover:border-emerald-500 transition-colors">Dashboard</button>
           <button onClick={() => { setPhase("setup"); setQuestions([]); setAnswers([]); setCurrentQ(0); setTimeLeft(10800); }} className="px-6 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-medium transition-colors">Retake Exam</button>
         </div>
@@ -158,25 +167,39 @@ export default function MockExamPage() {
   if (phase === "exam") {
     return (
       <div className="min-h-screen">
-        {/* Sticky Header */}
         <div className="sticky top-0 z-50 bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800 px-4 py-3">
-          <div className="max-w-5xl mx-auto flex items-center justify-between">
+          <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-4">
-              <span className="text-sm font-medium">MDCAT Mock Exam</span>
+              <span className="text-sm font-medium hidden sm:inline">MDCAT Mock Exam</span>
               <span className="text-sm text-gray-500">Q {currentQ + 1}/{questions.length}</span>
               <span className="text-sm text-gray-500">{answeredCount} answered</span>
             </div>
             <div className="flex items-center gap-4">
-              <button onClick={() => setShowNav(!showNav)} className="text-sm text-gray-500 hover:text-emerald-500">Nav</button>
+              <button onClick={() => setShowNav(!showNav)} className="text-sm text-gray-500 hover:text-emerald-500" aria-label="Question Navigator">Nav</button>
               <div className={`flex items-center gap-2 px-3 py-1 rounded-lg font-mono text-sm font-bold ${timeLeft < 600 ? "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 animate-pulse" : "bg-gray-100 dark:bg-gray-800"}`}>
                 <Clock className="h-4 w-4" /> {formatTime(timeLeft)}
               </div>
-              <button onClick={handleSubmit} className="px-4 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-medium">Submit</button>
+              <button onClick={() => setConfirmSubmit(true)} className="px-4 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-medium">Submit</button>
             </div>
           </div>
         </div>
 
-        {/* Question Navigator Overlay */}
+        {confirmSubmit && (
+          <div className="fixed inset-0 z-[60] bg-black/50 flex items-center justify-center p-4">
+            <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 max-w-sm w-full text-center">
+              <AlertTriangle className="h-12 w-12 text-amber-500 mx-auto mb-4" />
+              <h3 className="text-lg font-bold mb-2">Submit Exam?</h3>
+              <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
+                You have answered {answeredCount} out of {questions.length} questions. This action cannot be undone.
+              </p>
+              <div className="flex gap-3 justify-center">
+                <button onClick={() => setConfirmSubmit(false)} className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 text-sm font-medium">Cancel</button>
+                <button onClick={() => { setConfirmSubmit(false); handleSubmit(); }} className="px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-medium">Confirm Submit</button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {showNav && (
           <div className="fixed inset-0 z-40 bg-black/50" onClick={() => setShowNav(false)}>
             <div className="absolute right-4 top-16 bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-4 w-80 max-h-[70vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
@@ -186,6 +209,7 @@ export default function MockExamPage() {
                   <button
                     key={i}
                     onClick={() => { setCurrentQ(i); setShowNav(false); }}
+                    aria-label={`Question ${i + 1}, ${answers[i] !== undefined ? "answered" : "not answered"}`}
                     className={`w-8 h-8 rounded text-xs font-medium ${
                       i === currentQ ? "bg-emerald-500 text-white" :
                       answers[i] !== undefined ? "bg-blue-500 text-white" :
@@ -198,7 +222,6 @@ export default function MockExamPage() {
           </div>
         )}
 
-        {/* Progress */}
         <div className="max-w-5xl mx-auto px-4 py-6">
           <div className="h-1.5 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden mb-6">
             <div className="h-full bg-emerald-500 transition-all" style={{ width: `${((currentQ + 1) / questions.length) * 100}%` }} />
@@ -231,6 +254,12 @@ export default function MockExamPage() {
       <p className="text-gray-600 dark:text-gray-400 mb-8">Simulate the real MDCAT experience</p>
 
       <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-8">
+        {error && (
+          <div className="mb-4 p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 text-sm">
+            {error}
+          </div>
+        )}
+
         <div className="grid grid-cols-2 gap-4 mb-6">
           <div className="p-4 rounded-xl bg-gray-50 dark:bg-gray-800 text-center">
             <p className="text-2xl font-bold">180</p>
@@ -257,7 +286,7 @@ export default function MockExamPage() {
             <AlertTriangle className="h-5 w-5 text-amber-500 mt-0.5" />
             <div className="text-sm">
               <p className="font-medium text-amber-700 dark:text-amber-300">Important</p>
-              <p className="text-amber-600 dark:text-amber-400">Timer starts immediately. You can navigate between questions. Answers are auto-saved. No going back once submitted.</p>
+              <p className="text-amber-600 dark:text-amber-400">Timer starts immediately. You can navigate between questions. Answers are auto-saved. A confirmation dialog will appear before final submission.</p>
             </div>
           </div>
         </div>

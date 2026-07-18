@@ -119,14 +119,15 @@ export default function Sidebar() {
       <div className="px-3 py-4 border-t border-gray-200 dark:border-gray-800 space-y-1 flex-shrink-0">
         <button
           onClick={toggleDark}
+          aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
           className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 w-full transition-colors ${collapsed ? "justify-center" : ""}`}
-          title={collapsed ? (darkMode ? "Light Mode" : "Dark Mode") : undefined}
         >
           {darkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
           {!collapsed && <span>{darkMode ? "Light Mode" : "Dark Mode"}</span>}
         </button>
         <button
           onClick={() => setCollapsed(!collapsed)}
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           className={`hidden lg:flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 w-full transition-colors ${collapsed ? "justify-center" : ""}`}
         >
           {collapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
@@ -141,6 +142,8 @@ export default function Sidebar() {
       {/* Mobile hamburger */}
       <button
         onClick={() => setMobileOpen(!mobileOpen)}
+        aria-label="Toggle navigation menu"
+        aria-expanded={mobileOpen}
         className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-lg"
       >
         <div className="space-y-1.5">

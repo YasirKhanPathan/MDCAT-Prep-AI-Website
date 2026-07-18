@@ -43,6 +43,30 @@ export default function FlashcardStudyPage() {
     }
   }, [deck, currentIndex, dueCards]);
 
+  useEffect(() => {
+    if (sessionComplete || !deck) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === " " || e.key === "Enter") {
+        e.preventDefault();
+        setIsFlipped((prev) => !prev);
+      }
+      if (isFlipped) {
+        if (e.key === "1" || e.key === "ArrowLeft") {
+          e.preventDefault();
+          handleAnswer(false);
+        }
+        if (e.key === "2" || e.key === "ArrowRight") {
+          e.preventDefault();
+          handleAnswer(true);
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [sessionComplete, deck, isFlipped, handleAnswer]);
+
   if (!deck) return <div className="p-6 max-w-3xl mx-auto"><div className="animate-pulse h-8 bg-gray-200 dark:bg-gray-800 rounded w-48" /></div>;
 
   if (sessionComplete) {
@@ -71,7 +95,7 @@ export default function FlashcardStudyPage() {
               </div>
             </div>
           )}
-          <div className="flex gap-3 justify-center">
+          <div className="flex flex-wrap gap-3 justify-center">
             <button onClick={() => router.push("/flashcards")} className="px-6 py-3 rounded-xl border-2 border-gray-300 dark:border-gray-700 font-medium hover:border-emerald-500 transition-colors">
               Back to Flashcards
             </button>
@@ -90,7 +114,6 @@ export default function FlashcardStudyPage() {
 
   return (
     <div className="p-6 max-w-3xl mx-auto">
-      {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <button onClick={() => router.push("/flashcards")} className="flex items-center gap-2 text-sm text-gray-500 hover:text-emerald-500 transition-colors">
           <ArrowLeft className="h-4 w-4" /> Back
@@ -100,32 +123,34 @@ export default function FlashcardStudyPage() {
         </span>
       </div>
 
-      {/* Progress Bar */}
       <div className="h-2 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden mb-8">
         <div className="h-full bg-emerald-500 transition-all" style={{ width: `${((currentIndex + 1) / dueCards.length) * 100}%` }} />
       </div>
 
-      {/* Flashcard */}
       <div
         onClick={() => setIsFlipped(!isFlipped)}
-        className="bg-white dark:bg-gray-900 rounded-2xl border-2 border-gray-200 dark:border-gray-800 p-8 min-h-[300px] flex flex-col items-center justify-center cursor-pointer hover:border-emerald-500/50 transition-all select-none mb-8"
+        onKeyDown={(e) => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); setIsFlipped(!isFlipped); } }}
+        role="button"
+        tabIndex={0}
+        aria-label={isFlipped ? "Flashcard showing answer. Press Space or Enter to see question." : "Flashcard showing question. Press Space or Enter to reveal answer."}
+        className="bg-white dark:bg-gray-900 rounded-2xl border-2 border-gray-200 dark:border-gray-800 p-8 min-h-[300px] flex flex-col items-center justify-center cursor-pointer hover:border-emerald-500/50 transition-all select-none mb-8 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
       >
         <p className="text-xs text-gray-400 mb-4">{isFlipped ? "ANSWER" : "QUESTION"}</p>
         <p className="text-lg text-center leading-relaxed">
           {isFlipped ? card.back : card.front}
         </p>
-        <p className="text-xs text-gray-400 mt-6">Click to {isFlipped ? "see question" : "reveal answer"}</p>
+        <p className="text-xs text-gray-400 mt-6">Click or press Space to {isFlipped ? "see question" : "reveal answer"}</p>
       </div>
 
-      {/* Answer Buttons */}
       {isFlipped && (
-        <div className="flex gap-4 animate-fade-in-up">
+        <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-up">
           <button
             onClick={() => handleAnswer(false)}
             className="flex-1 flex items-center justify-center gap-2 py-4 rounded-xl border-2 border-red-300 dark:border-red-700 text-red-600 dark:text-red-400 font-semibold hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors"
           >
             <XCircle className="h-5 w-5" />
             Forgot it
+            <span className="text-xs opacity-60 ml-1">(1 or Left)</span>
           </button>
           <button
             onClick={() => handleAnswer(true)}
@@ -133,6 +158,7 @@ export default function FlashcardStudyPage() {
           >
             <CheckCircle className="h-5 w-5" />
             Knew it
+            <span className="text-xs opacity-60 ml-1">(2 or Right)</span>
           </button>
         </div>
       )}

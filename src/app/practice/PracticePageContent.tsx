@@ -30,6 +30,7 @@ export default function PracticePageContent() {
   const [showExplanations, setShowExplanations] = useState<boolean[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [quizResult, setQuizResult] = useState<{ correct: number; total: number; percentage: number } | null>(null);
+  const [error, setError] = useState<string | null>(null);
   
   // Timer state
   const [examMode, setExamMode] = useState(false);
@@ -70,6 +71,7 @@ export default function PracticePageContent() {
   const handleGenerate = async () => {
     if (!selectedSubject || !selectedTopic) return;
     setPhase("generating");
+    setError(null);
 
     try {
       const res = await fetch("/api/generate-questions", {
@@ -97,7 +99,7 @@ export default function PracticePageContent() {
         setTimerActive(true);
       }
     } catch {
-      alert("Failed to generate questions. Make sure your API key is set correctly.");
+      setError("Failed to generate questions. Please try again.");
       setPhase("setup");
     }
   };
@@ -221,7 +223,7 @@ export default function PracticePageContent() {
             </div>
           </div>
 
-          <div className="flex gap-3 justify-center">
+          <div className="flex flex-wrap gap-3 justify-center">
             <button
               onClick={handleReset}
               className="px-6 py-3 rounded-xl border-2 border-gray-300 dark:border-gray-700 font-medium hover:border-emerald-500 transition-colors"
@@ -340,6 +342,12 @@ export default function PracticePageContent() {
       </div>
 
       <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-8">
+        {error && (
+          <div className="mb-4 p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 text-sm">
+            {error}
+          </div>
+        )}
+
         <div className="mb-6">
           <label className="block text-sm font-medium mb-3">Select Subject</label>
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
@@ -484,6 +492,9 @@ export default function PracticePageContent() {
             </div>
             <button
               onClick={() => setExamMode(!examMode)}
+              role="switch"
+              aria-checked={examMode}
+              aria-label="Toggle exam mode timer"
               className={`relative w-12 h-6 rounded-full transition-colors ${
                 examMode ? "bg-blue-600" : "bg-gray-300 dark:bg-gray-600"
               }`}

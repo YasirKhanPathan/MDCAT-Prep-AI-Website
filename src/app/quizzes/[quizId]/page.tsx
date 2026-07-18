@@ -2,9 +2,9 @@
 
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { getQuizById } from "@/data/quizzes";
-import { ArrowLeft, Clock, Target, CheckCircle2, XCircle, Trophy } from "lucide-react";
+import { ArrowLeft, Clock, Target, CheckCircle2, Trophy } from "lucide-react";
 import MCQCard, { Question } from "@/components/MCQCard";
 import { recordQuizResult } from "@/lib/progress";
 
@@ -22,27 +22,49 @@ export default function QuizDetailPage() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [timeLeft, setTimeLeft] = useState(0);
   const [quizResult, setQuizResult] = useState<{ correct: number; total: number; percentage: number } | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const handleTimeUp = useCallback(() => {
-    if (phase === "quiz") {
-      handleFinish();
-    }
-  }, [phase]);
+  const handleFinish = useCallback(() => {
+    if (!quiz) return;
+    if (timerRef.current) clearInterval(timerRef.current);
+    const correctCount = questions.filter(
+      (q, i) => answers[i] === q.correctIndex
+    ).length;
+    const percentage = Math.round((correctCount / questions.length) * 100);
+
+    recordQuizResult({
+      subject: quiz.subject,
+      topic: quiz.topics[0],
+      totalQuestions: questions.length,
+      correctAnswers: correctCount,
+      difficulty: quiz.difficulty,
+      timeSpent: quiz.timeLimit * 60 - timeLeft,
+    });
+
+    setQuizResult({ correct: correctCount, total: questions.length, percentage });
+    setPhase("results");
+  }, [questions, answers, quiz, timeLeft]);
 
   useEffect(() => {
     if (phase !== "quiz" || timeLeft <= 0) return;
-    const timer = setInterval(() => {
+    timerRef.current = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
-          clearInterval(timer);
-          handleTimeUp();
+          clearInterval(timerRef.current!);
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
-    return () => clearInterval(timer);
-  }, [phase, timeLeft, handleTimeUp]);
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, [phase, timeLeft]);
+
+  useEffect(() => {
+    if (phase === "quiz" && timeLeft === 0 && questions.length > 0) {
+      handleFinish();
+    }
+  }, [phase, timeLeft, questions.length, handleFinish]);
 
   if (!quiz) {
     return (
@@ -63,9 +85,9 @@ export default function QuizDetailPage() {
 
   const handleStart = async () => {
     setPhase("generating");
+    setError(null);
 
     try {
-      // Use static questions if available
       if (quiz.staticQuestions && quiz.staticQuestions.length > 0) {
         const shuffled = [...quiz.staticQuestions].sort(() => Math.random() - 0.5);
         setQuestions(shuffled);
@@ -76,7 +98,6 @@ export default function QuizDetailPage() {
         return;
       }
 
-      // Fall back to AI generation
       const res = await fetch("/api/generate-questions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -97,7 +118,7 @@ export default function QuizDetailPage() {
       setTimeLeft(quiz.timeLimit * 60);
       setPhase("quiz");
     } catch {
-      alert("Failed to generate questions. Please try again.");
+      setError("Failed to generate questions. Please try again.");
       setPhase("intro");
     }
   };
@@ -110,25 +131,6 @@ export default function QuizDetailPage() {
     const newShowExplanations = [...showExplanations];
     newShowExplanations[questionIndex] = true;
     setShowExplanations(newShowExplanations);
-  };
-
-  const handleFinish = () => {
-    const correctCount = questions.filter(
-      (q, i) => answers[i] === q.correctIndex
-    ).length;
-    const percentage = Math.round((correctCount / questions.length) * 100);
-
-    recordQuizResult({
-      subject: quiz.subject,
-      topic: quiz.topics[0],
-      totalQuestions: questions.length,
-      correctAnswers: correctCount,
-      difficulty: quiz.difficulty,
-      timeSpent: quiz.timeLimit * 60 - timeLeft,
-    });
-
-    setQuizResult({ correct: correctCount, total: questions.length, percentage });
-    setPhase("results");
   };
 
   const handleNext = () => {
@@ -162,7 +164,7 @@ export default function QuizDetailPage() {
             </div>
           </div>
 
-          <div className="flex gap-3 justify-center">
+          <div className="flex flex-wrap gap-3 justify-center">
             <Link
               href="/quizzes"
               className="px-6 py-3 rounded-xl border-2 border-gray-300 dark:border-gray-700 font-medium hover:border-emerald-500 transition-colors"
@@ -184,7 +186,6 @@ export default function QuizDetailPage() {
   if (phase === "quiz") {
     return (
       <div className="p-6 max-w-3xl mx-auto">
-        {/* Timer + Progress */}
         <div className="mb-6">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-4">
@@ -279,6 +280,13 @@ export default function QuizDetailPage() {
       <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-8">
         <h1 className="text-2xl font-bold mb-2">{quiz.title}</h1>
         <p className="text-gray-600 dark:text-gray-400 mb-4">{quiz.description}</p>
+
+        {error && (
+          <div className="mb-4 p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 text-sm">
+            {error}
+          </div>
+        )}
+
         {quiz.staticQuestions && quiz.staticQuestions.length > 0 && (
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 text-xs font-medium mb-6">
             <CheckCircle2 className="h-3 w-3" />
