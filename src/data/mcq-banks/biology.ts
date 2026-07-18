@@ -1,7 +1,7 @@
 import { Question } from "@/components/MCQCard";
 
 export const biologyHardQuestions: Question[] = [
-  // Cell Biology
+  // ==================== CELL BIOLOGY ====================
   {
     question: "Which organelle is responsible for the synthesis of ATP through oxidative phosphorylation?",
     options: ["Ribosome", "Mitochondria", "Golgi apparatus", "Endoplasmic reticulum"],
@@ -18,7 +18,7 @@ export const biologyHardQuestions: Question[] = [
     question: "Which of the following is NOT a function of the rough endoplasmic reticulum?",
     options: ["Protein synthesis", "Glycosylation", "Lipid synthesis", "Protein folding"],
     correctIndex: 2,
-    explanation: "Lipid synthesis is primarily carried out by the smooth endoplasmic reticulum (SER). The rough ER is studded with ribosomes and is involved in protein synthesis, glycosylation (addition of sugar chains), and protein folding."
+    explanation: "Lipid synthesis is primarily carried out by the smooth endoplasmic reticulum (SER). The rough ER is studded with ribosomes and is involved in protein synthesis, glycosylation, and protein folding."
   },
   {
     question: "What is the primary role of cyclin-dependent kinases (CDKs) in the cell cycle?",
@@ -27,10 +27,10 @@ export const biologyHardQuestions: Question[] = [
     explanation: "CDKs are key regulators of the cell cycle. They form complexes with cyclins to phosphorylate target proteins that drive the cell through different phases of the cell cycle (G1, S, G2, M)."
   },
   {
-    question: "Which process converts NADH back to NAD⁺ during anaerobic respiration in muscle cells?",
+    question: "Which process converts NADH back to NAD+ during anaerobic respiration in muscle cells?",
     options: ["Glycolysis", "Lactic acid fermentation", "Krebs cycle", "Electron transport chain"],
     correctIndex: 1,
-    explanation: "During anaerobic respiration in muscles, pyruvate is reduced to lactate by lactate dehydrogenase, which simultaneously oxidizes NADH to NAD⁺. This NAD⁺ is then reused in glycolysis."
+    explanation: "During anaerobic respiration in muscles, pyruvate is reduced to lactate by lactate dehydrogenase, which simultaneously oxidizes NADH to NAD+. This NAD+ is then reused in glycolysis."
   },
   {
     question: "The fluid mosaic model describes the structure of which cellular component?",
@@ -38,307 +38,11 @@ export const biologyHardQuestions: Question[] = [
     correctIndex: 1,
     explanation: "The fluid mosaic model, proposed by Singer and Nicolson (1972), describes the cell membrane as a phospholipid bilayer with embedded proteins that can move laterally, giving it fluid and mosaic characteristics."
   },
-  // Genetics
   {
-    question: "In a dihybrid cross between two heterozygous parents (AaBb × AaBb), what is the expected phenotypic ratio in the F2 generation?",
-    options: ["9:3:3:1", "1:1:1:1", "3:1", "9:6:1"],
-    correctIndex: 0,
-    explanation: "In a dihybrid cross with independent assortment, the F2 generation shows a 9:3:3:1 ratio. This means 9/16 show both dominant traits, 3/16 show first dominant only, 3/16 show second dominant only, and 1/16 show both recessive traits."
-  },
-  {
-    question: "Which type of mutation changes a codon to a STOP codon?",
-    options: ["Missense", "Nonsense", "Silent", "Frameshift"],
-    correctIndex: 1,
-    explanation: "A nonsense mutation changes a sense codon (coding for an amino acid) into a premature STOP codon (UAA, UAG, or UGA), resulting in a truncated and usually nonfunctional protein."
-  },
-  {
-    question: "What is the function of telomerase in eukaryotic cells?",
-    options: ["DNA repair", "Telomere extension", "Chromosome condensation", "Histone modification"],
-    correctIndex: 1,
-    explanation: "Telomerase is a ribonucleoprotein enzyme that adds repetitive DNA sequences (TTAGGG in humans) to the ends of chromosomes (telomeres), preventing their shortening during cell division."
-  },
-  {
-    question: "The lac operon in E. coli is an example of:",
-    options: ["Positive regulation", "Negative regulation", "Both positive and negative regulation", "Constitutive expression"],
+    question: "Which of the following structures is found in plant cells but NOT in animal cells?",
+    options: ["Ribosomes", "Mitochondria", "Central vacuole", "Golgi apparatus"],
     correctIndex: 2,
-    explanation: "The lac operon exhibits both positive and negative regulation. It is negatively regulated by the lac repressor (LacI) which binds the operator in the absence of lactose, and positively regulated by CAP-cAMP when glucose is absent."
-  },
-  {
-    question: "Which type of RNA carries amino acids to the ribosome during translation?",
-    options: ["mRNA", "tRNA", "rRNA", "snRNA"],
-    correctIndex: 1,
-    explanation: "Transfer RNA (tRNA) carries specific amino acids to the ribosome. Each tRNA has an anticodon that pairs with the complementary codon on mRNA, ensuring the correct amino acid is added to the growing polypeptide chain."
-  },
-  {
-    question: "In sickle cell anemia, a single nucleotide change in the β-globin gene results in:",
-    options: ["Glu → Val at position 6", "His → Leu at position 6", "Val → Glu at position 6", "Leu → His at position 6"],
-    correctIndex: 0,
-    explanation: "Sickle cell anemia is caused by a point mutation (GAG → GTG) in the β-globin gene, resulting in the substitution of glutamic acid (Glu) with valine (Val) at position 6 of the β-globin chain."
-  },
-  {
-    question: "Which of the following is a characteristic of mitochondrial inheritance?",
-    options: ["Father-to-child transmission", "Mother-to-child transmission", "X-linked pattern", "Autosomal dominant pattern"],
-    correctIndex: 1,
-    explanation: "Mitochondrial DNA is inherited exclusively from the mother (maternal inheritance) because mitochondria in the sperm are typically degraded after fertilization. This results in mother-to-child transmission of mitochondrial disorders."
-  },
-  // Human Physiology
-  {
-    question: "The Frank-Starling mechanism of the heart describes:",
-    options: ["Relationship between heart rate and blood pressure", "Relationship between end-diastolic volume and stroke volume", "Effect of sympathetic stimulation on heart rate", "Regulation of cardiac output by the brain"],
-    correctIndex: 1,
-    explanation: "The Frank-Starling mechanism states that the stroke volume of the heart increases in response to an increase in the volume of blood filling the ventricles (end-diastolic volume), within physiological limits."
-  },
-  {
-    question: "Which hormone is primarily responsible for the regulation of blood calcium levels through its action on bones, kidneys, and intestines?",
-    options: ["Thyroxine", "Calcitonin", "Parathyroid hormone (PTH)", "Aldosterone"],
-    correctIndex: 2,
-    explanation: "PTH is secreted by the parathyroid glands when blood calcium is low. It increases calcium levels by stimulating osteoclast activity in bones, increasing calcium reabsorption in kidneys, and promoting activation of vitamin D for intestinal absorption."
-  },
-  {
-    question: "The Countercurrent multiplier system is found in:",
-    options: ["Liver", "Lung", "Kidney (Loop of Henle)", "Thyroid gland"],
-    correctIndex: 2,
-    explanation: "The countercurrent multiplier system operates in the Loop of Henle of the nephron. The descending limb is permeable to water while the ascending limb actively transports NaCl, creating an osmotic gradient in the medulla that concentrates urine."
-  },
-  {
-    question: "Which neurotransmitter is primarily involved at the neuromuscular junction?",
-    options: ["Dopamine", "GABA", "Acetylcholine", "Serotonin"],
-    correctIndex: 2,
-    explanation: "Acetylcholine (ACh) is released at the neuromuscular junction and binds to nicotinic receptors on the motor end plate of skeletal muscle fibers, triggering muscle contraction through depolarization."
-  },
-  {
-    question: "Which blood vessels have the highest resistance to blood flow?",
-    options: ["Aorta", "Capillaries", "Arterioles", "Venules"],
-    correctIndex: 2,
-    explanation: "Arterioles have the highest resistance to blood flow (highest total peripheral resistance) because of their small diameter and thick smooth muscle walls. They are the primary site of vascular resistance regulation."
-  },
-  {
-    question: "The respiratory exchange ratio (RER) indicates:",
-    options: ["The ratio of O₂ consumed to CO₂ produced", "The ratio of CO₂ produced to O₂ consumed", "The total lung capacity", "The tidal volume"],
-    correctIndex: 1,
-    explanation: "RER = VCO₂/VO₂ (volume of CO₂ produced divided by volume of O₂ consumed). An RER of 1.0 indicates pure carbohydrate metabolism, while 0.7 indicates pure fat metabolism."
-  },
-  {
-    question: "Which of the following hormones stimulates the release of bile from the gallbladder?",
-    options: ["Gastrin", "Secretin", "Cholecystokinin (CCK)", "Gastric inhibitory peptide (GIP)"],
-    correctIndex: 2,
-    explanation: "Cholecystokinin (CCK) is released by I-cells in the duodenum in response to fats and proteins. It stimulates gallbladder contraction (releasing bile) and pancreatic enzyme secretion."
-  },
-  {
-    question: "Which of the following is the most abundant protein in the human body?",
-    options: ["Hemoglobin", "Albumin", "Collagen", "Keratin"],
-    correctIndex: 2,
-    explanation: "Collagen is the most abundant protein, making up about 30% of total body protein. It provides structural support to skin, bones, tendons, ligaments, and connective tissues throughout the body."
-  },
-  // Plant Physiology
-  {
-    question: "Which pigment is primarily responsible for the light-dependent reactions of photosynthesis?",
-    options: ["Carotenoids", "Chlorophyll a", "Phycocyanin", "Xanthophyll"],
-    correctIndex: 1,
-    explanation: "Chlorophyll a is the primary pigment that participates directly in the light-dependent reactions. It is the only pigment that can transfer light energy to the reaction center (P680 in PSII and P700 in PSI) for photochemical conversion."
-  },
-  {
-    question: "The Calvin cycle takes place in:",
-    options: ["Thylakoid membrane", "Stroma of chloroplast", "Cytoplasm", "Mitochondrial matrix"],
-    correctIndex: 1,
-    explanation: "The Calvin cycle (light-independent reactions) occurs in the stroma of chloroplasts. Here, CO₂ is fixed into organic molecules using ATP and NADPH produced in the light-dependent reactions."
-  },
-  {
-    question: "Which plant hormone is primarily responsible for cell elongation and apical dominance?",
-    options: ["Cytokinin", "Gibberellin", "Auxin", "Abscisic acid"],
-    correctIndex: 2,
-    explanation: "Auxin (primarily IAA - indole-3-acetic acid) is produced in the apical meristem and promotes cell elongation, maintains apical dominance, and influences phototropism and gravitropism."
-  },
-  {
-    question: "What is the primary function of transpiration in plants?",
-    options: ["CO₂ absorption", "Water and mineral transport", "Oxygen release", "Sugar transport"],
-    correctIndex: 1,
-    explanation: "Transpiration creates a negative pressure (tension) that pulls water and dissolved minerals from roots through the xylem to leaves. This is the main driving force for water transport in plants (cohesion-tension theory)."
-  },
-  {
-    question: "CAM plants minimize photorespiration by:",
-    options: ["Opening stomata only at night", "Fixing CO₂ into C4 compounds", "Having thick, waxy cuticles", "Using bundle sheath cells"],
-    correctIndex: 0,
-    explanation: "CAM (Crassulacean Acid Metabolism) plants open their stomata at night (when it's cooler) to fix CO₂ into malate, which is stored in vacuoles. During the day, stomata close to conserve water, and malate is released to provide CO₂ for the Calvin cycle."
-  },
-  // Ecology
-  {
-    question: "Which of the following represents a density-dependent factor in population regulation?",
-    options: ["Flood", "Disease", "Wildfire", "Drought"],
-    correctIndex: 1,
-    explanation: "Disease is density-dependent because its transmission rate increases with population density. As populations become more crowded, infectious diseases spread more easily, acting as a regulatory mechanism."
-  },
-  {
-    question: "The 10% rule in ecology states that:",
-    options: ["10% of species are keystone species", "Only 10% of energy is transferred between trophic levels", "10% of a habitat should be protected", "Only 10% of individuals survive"],
-    correctIndex: 1,
-    explanation: "The 10% rule states that approximately 10% of the energy at one trophic level is transferred to the next. The remaining 90% is lost as heat through metabolism (cellular respiration)."
-  },
-  {
-    question: "Which ecological term describes the role of an organism within its ecosystem?",
-    options: ["Habitat", "Niche", "Biome", "Population"],
-    correctIndex: 1,
-    explanation: "An ecological niche describes the functional role of an organism in its ecosystem, including its diet, habitat, interactions with other species, and how it uses resources. It is broader than habitat alone."
-  },
-  {
-    question: "Succession that occurs on previously uninhabited land (e.g., bare rock from a volcanic eruption) is called:",
-    options: ["Secondary succession", "Primary succession", "Climax community", "Pioneer community"],
-    correctIndex: 1,
-    explanation: "Primary succession occurs on barren land where no previous ecosystem existed, such as bare rock, lava flows, or retreating glaciers. Pioneer species like lichens colonize first, gradually building soil for later species."
-  },
-  // Enzymes & Biomolecules
-  {
-    question: "Which type of enzyme inhibition can be overcome by increasing substrate concentration?",
-    options: ["Non-competitive inhibition", "Competitive inhibition", "Irreversible inhibition", "Allosteric inhibition"],
-    correctIndex: 1,
-    explanation: "In competitive inhibition, the inhibitor competes with the substrate for the active site. Increasing substrate concentration can outcompete the inhibitor, eventually achieving maximum velocity (Vmax)."
-  },
-  {
-    question: "The Michaelis constant (Km) represents:",
-    options: ["The maximum reaction velocity", "The substrate concentration at half Vmax", "The enzyme concentration", "The inhibition constant"],
-    correctIndex: 1,
-    explanation: "Km is the substrate concentration at which the reaction velocity is half of Vmax. A lower Km indicates higher enzyme affinity for the substrate, while a higher Km indicates lower affinity."
-  },
-  {
-    question: "Which type of enzyme regulation involves the binding of a molecule at a site other than the active site?",
-    options: ["Competitive inhibition", "Allosteric regulation", "Covalent modification", "Feedback inhibition"],
-    correctIndex: 1,
-    explanation: "Allosteric regulation involves the binding of regulatory molecules (activators or inhibitors) at allosteric sites, which are distinct from the active site. This binding induces conformational changes that affect enzyme activity."
-  },
-  {
-    question: "Which of the following is a feature of enzymes that makes them different from inorganic catalysts?",
-    options: ["They increase activation energy", "They are consumed during reactions", "They exhibit substrate specificity", "They work at high temperatures"],
-    correctIndex: 2,
-    explanation: "Enzymes are highly specific for their substrates due to the precise shape and chemical properties of their active sites (lock and key model or induced fit model). Inorganic catalysts are generally less specific."
-  },
-  {
-    question: "Denaturation of an enzyme typically results in:",
-    options: ["Increased activity", "Loss of quaternary structure only", "Loss of three-dimensional structure and activity", "Changes in primary structure only"],
-    correctIndex: 2,
-    explanation: "Denaturation disrupts the secondary, tertiary, and quaternary structures of enzymes (but not primary structure), causing loss of the active site shape and therefore loss of catalytic activity."
-  },
-  // Evolution
-  {
-    question: "Which type of natural selection favors intermediate phenotypes and selects against extremes?",
-    options: ["Directional selection", "Disruptive selection", "Stabilizing selection", "Sexual selection"],
-    correctIndex: 2,
-    explanation: "Stabilizing selection favors the intermediate phenotype and selects against both extreme phenotypes. For example, human birth weight is stabilized around 3.5 kg, with higher mortality for very low or very high birth weights."
-  },
-  {
-    question: "The Hardy-Weinberg principle states that allele frequencies in a population will remain constant in the absence of:",
-    options: ["Natural selection only", "Genetic drift only", "Evolutionary forces", "Mutation only"],
-    correctIndex: 2,
-    explanation: "The Hardy-Weinberg equilibrium states that allele frequencies remain constant across generations in the absence of all evolutionary forces: natural selection, genetic drift, gene flow, mutation, and non-random mating."
-  },
-  {
-    question: "Which of the following is an example of convergent evolution?",
-    options: ["Wings of bats and birds", "Forelimbs of whales and humans", "Eyes of octopus and humans", "Both A and C"],
-    correctIndex: 3,
-    explanation: "Convergent evolution produces similar structures in unrelated species due to similar selective pressures. Wings of bats (mammals) and birds evolved independently, as did camera eyes in octopuses and vertebrates."
-  },
-  // Biological Molecules
-  {
-    question: "Which polysaccharide serves as the primary energy storage molecule in animals?",
-    options: ["Cellulose", "Starch", "Glycogen", "Chitin"],
-    correctIndex: 2,
-    explanation: "Glycogen is the primary energy storage polysaccharide in animals. It is stored mainly in liver and muscle cells as highly branched granules that can be quickly broken down into glucose when energy is needed."
-  },
-  {
-    question: "Which type of lipid is a major component of cell membranes and also serves as a precursor for steroid hormones?",
-    options: ["Triglycerides", "Phospholipids", "Cholesterol", "Fatty acids"],
-    correctIndex: 2,
-    explanation: "Cholesterol is a sterol that is a key component of animal cell membranes (regulating fluidity) and serves as the precursor for steroid hormones (testosterone, estrogen, cortisol, etc.), bile salts, and vitamin D."
-  },
-  {
-    question: "The tertiary structure of a protein is stabilized by all of the following EXCEPT:",
-    options: ["Disulfide bonds", "Hydrogen bonds", "Peptide bonds", "Hydrophobic interactions"],
-    correctIndex: 2,
-    explanation: "Peptide bonds stabilize the primary structure (amino acid sequence) of proteins. Tertiary structure is stabilized by disulfide bonds, hydrogen bonds, ionic bonds, van der Waals forces, and hydrophobic interactions between R-groups."
-  },
-  // Morphology & Anatomy
-  {
-    question: "Which type of joint allows the greatest range of motion?",
-    options: ["Sutures", "Hinge joint", "Ball and socket joint", "Pivot joint"],
-    correctIndex: 2,
-    explanation: "Ball and socket joints (e.g., shoulder and hip) allow the greatest range of motion, including flexion, extension, abduction, adduction, circumduction, and rotation. They are classified as multiaxial diarthrodial joints."
-  },
-  {
-    question: "The epiglottis prevents food from entering the:",
-    options: ["Esophagus", "Trachea", "Pharynx", "Nasal cavity"],
-    correctIndex: 1,
-    explanation: "The epiglottis is a flap of cartilage that covers the glottis (opening of the larynx/trachea) during swallowing, directing food into the esophagus and preventing aspiration into the airway."
-  },
-  {
-    question: "Which type of blood cell is primarily responsible for the immune response against parasites?",
-    options: ["Neutrophils", "Lymphocytes", "Eosinophils", "Monocytes"],
-    correctIndex: 2,
-    explanation: "Eosinophils are granulocytes that play a key role in defense against parasitic infections (especially helminths) and are also involved in allergic reactions. They release toxic granule contents to destroy parasites."
-  },
-  {
-    question: "Hemoglobin has a higher affinity for oxygen when:",
-    options: ["pH is low and temperature is high", "pH is high and temperature is low", "CO₂ concentration is high", "2,3-BPG levels are high"],
-    correctIndex: 1,
-    explanation: "Hemoglobin has higher O₂ affinity at high pH (low H⁺) and low temperature (left-shifted oxygen dissociation curve). This occurs in the lungs where pH is higher and temperature is lower, facilitating O₂ loading."
-  },
-  {
-    question: "The sinoatrial (SA) node is the heart's natural pacemaker because:",
-    options: ["It has the fastest conduction velocity", "It generates spontaneous action potentials", "It connects atria to ventricles", "It receives the most parasympathetic input"],
-    correctIndex: 1,
-    explanation: "The SA node spontaneously depolarizes (has automaticity) at approximately 75 beats per minute, faster than any other part of the heart. This spontaneous depolarization (funny current, If) makes it the primary pacemaker."
-  },
-  {
-    question: "Antibodies are produced by:",
-    options: ["T-helper cells", "B-lymphocytes (plasma cells)", "Macrophages", "Natural killer cells"],
-    correctIndex: 1,
-    explanation: "Antibodies (immunoglobulins) are produced by plasma cells, which are differentiated B-lymphocytes. Each plasma cell produces antibodies specific to one antigen epitope, contributing to humoral immunity."
-  },
-  {
-    question: "Which vitamin deficiency causes night blindness?",
-    options: ["Vitamin A", "Vitamin B12", "Vitamin C", "Vitamin D"],
-    correctIndex: 0,
-    explanation: "Vitamin A (retinol) is essential for the synthesis of rhodopsin, the photopigment in rod cells of the retina. Deficiency leads to nyctalopia (night blindness) and can progress to xerophthalmia."
-  },
-  {
-    question: "The glomerular filtration rate (GFR) is primarily regulated by:",
-    options: ["Afferent arteriole constriction/dilation", "Efferent arteriole constriction/dilation", "Both afferent and efferent arterioles", "Collecting duct reabsorption"],
-    correctIndex: 2,
-    explanation: "GFR is regulated by both afferent and efferent arterioles. Constriction of the afferent arteriole decreases GFR, while constriction of the efferent arteriole increases GFR. Autoregulation, sympathetic input, and hormones all modulate both."
-  },
-  {
-    question: "Which of the following is a function of the liver in metabolism?",
-    options: ["Insulin production", "Gluconeogenesis", "Thyroid hormone synthesis", "Red blood cell production"],
-    correctIndex: 1,
-    explanation: "The liver performs gluconeogenesis (synthesis of glucose from non-carbohydrate sources like amino acids, lactate, and glycerol), especially during fasting. It also stores glycogen, synthesizes plasma proteins, and detoxifies substances."
-  },
-  {
-    question: "The basal metabolic rate (BMR) is most affected by:",
-    options: ["Physical activity level", "Thyroid hormone levels", "Diet composition", "Sleep duration"],
-    correctIndex: 1,
-    explanation: "Thyroid hormones (T3 and T4) are the primary regulators of BMR. Hyperthyroidism increases BMR while hypothyroidism decreases it. Other factors like age, sex, body composition, and fasting also affect BMR."
-  },
-  {
-    question: "Which structure in the kidney is responsible for the concentration of urine?",
-    options: ["Glomerulus", "Bowman's capsule", "Collecting duct", "Proximal convoluted tubule"],
-    correctIndex: 2,
-    explanation: "The collecting duct passes through the hypertonic medulla. In the presence of ADH (antidiuretic hormone), the collecting duct becomes permeable to water, allowing water reabsorption and concentration of urine."
-  },
-  {
-    question: "Oxygen dissociation curve shifts to the RIGHT when:",
-    options: ["Temperature decreases", "pH increases (becomes more alkaline)", "CO₂ levels increase", "2,3-BPG decreases"],
-    correctIndex: 2,
-    explanation: "A right shift indicates decreased O₂ affinity (Bohr effect), facilitating O₂ unloading to tissues. This occurs with increased CO₂, increased temperature, decreased pH (more acidic), and increased 2,3-BPG — all conditions found in actively metabolizing tissues."
-  },
-  {
-    question: "The primary site of nutrient absorption in the human digestive system is:",
-    options: ["Stomach", "Small intestine (jejunum)", "Large intestine", "Duodenum"],
-    correctIndex: 1,
-    explanation: "The jejunum of the small intestine is the primary site for absorption of most nutrients (amino acids, monosaccharides, fatty acids, vitamins, minerals). The villi and microvilli increase surface area for efficient absorption."
-  },
-  {
-    question: "Which of the following correctly describes the cardiac cycle?",
-    options: ["Systole → Isovolumetric relaxation → Diastole → Isovolumetric contraction", "Atrial systole → Ventricular systole → Diastole", "Isovolumetric contraction → Ejection → Isovolumetric relaxation → Filling", "Diastole → Systole → Isovolumetric relaxation"],
-    correctIndex: 2,
-    explanation: "The cardiac cycle consists of: (1) Isovolumetric contraction (all valves closed, pressure rises), (2) Ejection (semilunar valves open, blood pumped out), (3) Isovolumetric relaxation (all valves closed), (4) Filling (AV valves open, ventricles fill with blood)."
+    explanation: "The central vacuole is a large, membrane-bound organelle found in mature plant cells that stores water, nutrients, and waste products. It maintains turgor pressure, providing structural support."
   },
   {
     question: "Which of the following is NOT a characteristic of prokaryotic cells?",
@@ -347,57 +51,878 @@ export const biologyHardQuestions: Question[] = [
     explanation: "Prokaryotic cells lack a membrane-bound nucleus. Their DNA is found in the nucleoid region. They also lack other membrane-bound organelles like mitochondria, ER, and Golgi apparatus."
   },
   {
+    question: "The sodium-potassium pump (Na+/K+-ATPase) transports:",
+    options: ["2 Na+ in and 3 K+ out", "3 Na+ out and 2 K+ in", "2 Na+ out and 3 K+ in", "3 Na+ in and 2 K+ out"],
+    correctIndex: 1,
+    explanation: "The Na+/K+-ATPase pumps 3 Na+ ions out and 2 K+ ions into the cell per ATP hydrolyzed. This electrochemical gradient is essential for nerve impulses, muscle contraction, and secondary active transport."
+  },
+  {
+    question: "Autophagy is best described as:",
+    options: ["Cell death triggered by external signals", "Self-digestion of damaged organelles by lysosomes", "Cell division without DNA replication", "Programmed cell death during development"],
+    correctIndex: 1,
+    explanation: "Autophagy is a catabolic process where damaged organelles are enclosed in autophagosomes and delivered to lysosomes for degradation and recycling."
+  },
+  {
+    question: "Which phase of the cell cycle is characterized by the longest duration?",
+    options: ["G1 phase", "S phase", "G2 phase", "M phase"],
+    correctIndex: 0,
+    explanation: "The G1 phase is typically the longest. The cell grows, produces proteins and organelles, and prepares for DNA replication. In some cells, G1 can last hours to days, including a resting state called G0."
+  },
+  {
+    question: "The centrosome functions primarily in:",
+    options: ["Protein synthesis", "Microtubule organization", "Lipid metabolism", "DNA repair"],
+    correctIndex: 1,
+    explanation: "The centrosome is the main microtubule-organizing center (MTOC) in animal cells. It contains two centrioles and plays a critical role in forming the mitotic spindle during cell division."
+  },
+  {
+    question: "Which of the following correctly describes the endomembrane system?",
+    options: ["Mitochondria and chloroplasts working together", "ER, Golgi, lysosomes, and plasma membrane as a coordinated unit", "The cytoskeleton network", "The nuclear envelope and associated structures"],
+    correctIndex: 1,
+    explanation: "The endomembrane system includes the nuclear envelope, ER, Golgi apparatus, lysosomes, vesicles, vacuoles, and plasma membrane, working together to modify, package, and transport lipids and proteins."
+  },
+  {
+    question: "Apoptosis differs from necrosis in that apoptosis:",
+    options: ["Causes inflammation", "Is uncontrolled cell death", "Involves cell shrinkage and membrane blebbing", "Results in cell swelling and rupture"],
+    correctIndex: 2,
+    explanation: "Apoptosis is programmed, controlled cell death characterized by cell shrinkage, chromatin condensation, membrane blebbing, and formation of apoptotic bodies. Unlike necrosis, it does not trigger inflammation."
+  },
+  {
+    question: "Which organelle is responsible for the detoxification of drugs and alcohol in liver cells?",
+    options: ["Mitochondria", "Smooth endoplasmic reticulum", "Peroxisomes", "Lysosomes"],
+    correctIndex: 1,
+    explanation: "The smooth ER contains cytochrome P450 enzymes that hydroxylate and detoxify drugs, alcohol, and other xenobiotic compounds, particularly abundant in hepatocytes (liver cells)."
+  },
+
+  // ==================== MOLECULAR BIOLOGY ====================
+  {
+    question: "The enzyme responsible for unwinding the DNA double helix during replication is:",
+    options: ["DNA polymerase", "DNA ligase", "Helicase", "Primase"],
+    correctIndex: 2,
+    explanation: "Helicase breaks hydrogen bonds between complementary base pairs, unwinding the DNA double helix to create the replication fork. It works with single-strand binding proteins to stabilize unwound strands."
+  },
+  {
     question: "DNA replication is described as semiconservative because:",
     options: ["Only one strand is replicated", "Each new molecule has one old and one new strand", "Replication occurs only in S phase", "Both strands are newly synthesized"],
     correctIndex: 1,
-    explanation: "Meselson and Stahl's experiment (1958) proved that DNA replication is semiconservative: each daughter molecule contains one parental (original) strand and one newly synthesized strand."
+    explanation: "Meselson and Stahl's experiment (1958) proved that each daughter DNA molecule contains one parental strand and one newly synthesized strand."
+  },
+  {
+    question: "Which type of RNA carries amino acids to the ribosome during translation?",
+    options: ["mRNA", "tRNA", "rRNA", "snRNA"],
+    correctIndex: 1,
+    explanation: "Transfer RNA (tRNA) carries specific amino acids to the ribosome. Each tRNA has an anticodon that pairs with the complementary codon on mRNA, ensuring the correct amino acid is added to the polypeptide chain."
+  },
+  {
+    question: "The role of mRNA in protein synthesis is to:",
+    options: ["Carry amino acids to ribosomes", "Transfer genetic code from DNA to ribosomes", "Form the structural component of ribosomes", "Catalyze peptide bond formation"],
+    correctIndex: 1,
+    explanation: "Messenger RNA (mRNA) carries genetic information from DNA in the nucleus to ribosomes in the cytoplasm, serving as a template for protein synthesis during translation."
   },
   {
     question: "Which of the following mutations is least likely to affect protein function?",
     options: ["Frameshift mutation in coding region", "Nonsense mutation in coding region", "Silent mutation in coding region", "Missense mutation in active site"],
     correctIndex: 2,
-    explanation: "A silent (synonymous) mutation changes the DNA codon but not the amino acid (due to degeneracy of the genetic code), so the protein sequence remains unchanged and function is unaffected."
+    explanation: "A silent mutation changes the DNA codon but not the amino acid due to degeneracy of the genetic code, so the protein sequence remains unchanged and function is unaffected."
   },
   {
-    question: "Which blood group is known as the universal donor?",
-    options: ["A positive", "B negative", "AB positive", "O negative"],
-    correctIndex: 3,
-    explanation: "O negative blood lacks A, B, and Rh antigens on red blood cells, so it can be transfused to patients of any blood type without causing an immune reaction. However, O negative individuals can only receive O negative blood."
+    question: "The lac operon in E. coli is an example of:",
+    options: ["Positive regulation", "Negative regulation", "Both positive and negative regulation", "Constitutive expression"],
+    correctIndex: 2,
+    explanation: "The lac operon is negatively regulated by the lac repressor (binds operator without lactose) and positively regulated by CAP-cAMP when glucose is absent, demonstrating both types of regulation."
   },
   {
-    question: "The renin-angiotensin-aldosterone system (RAAS) primarily regulates:",
-    options: ["Blood glucose levels", "Blood pressure and fluid balance", "Calcium metabolism", "Body temperature"],
+    question: "Which type of mutation changes a codon to a STOP codon?",
+    options: ["Missense", "Nonsense", "Silent", "Frameshift"],
     correctIndex: 1,
-    explanation: "RAAS regulates blood pressure and fluid balance. Renin converts angiotensinogen to angiotensin I, which is converted to angiotensin II. Angiotensin II causes vasoconstriction and stimulates aldosterone release, promoting sodium and water retention."
+    explanation: "A nonsense mutation changes a sense codon into a premature STOP codon (UAA, UAG, or UGA), resulting in a truncated and usually nonfunctional protein."
+  },
+  {
+    question: "Spliceosomes are responsible for:",
+    options: ["DNA replication", "RNA splicing", "Protein folding", "Ribosome assembly"],
+    correctIndex: 1,
+    explanation: "Spliceosomes are large ribonucleoprotein complexes that remove introns from pre-mRNA and join exons together during RNA processing. This occurs in the nucleus before mRNA export to the cytoplasm."
+  },
+  {
+    question: "The function of telomerase in eukaryotic cells is:",
+    options: ["DNA repair", "Telomere extension", "Chromosome condensation", "Histone modification"],
+    correctIndex: 1,
+    explanation: "Telomerase adds repetitive DNA sequences (TTAGGG in humans) to chromosome ends (telomeres), preventing their shortening during cell division."
+  },
+  {
+    question: "Which DNA repair mechanism uses a template from the undamaged complementary strand?",
+    options: ["Base excision repair", "Nucleotide excision repair", "Mismatch repair", "Direct repair"],
+    correctIndex: 2,
+    explanation: "Mismatch repair corrects replication errors using the undamaged strand as a template. In E. coli, the MutHLS system recognizes the unmethylated (new) strand for repair."
+  },
+  {
+    question: "Okazaki fragments are synthesized on the:",
+    options: ["Leading strand only", "Lagging strand only", "Both leading and lagging strands", "Template strand only"],
+    correctIndex: 1,
+    explanation: "Okazaki fragments (100-200 nt in eukaryotes) are synthesized discontinuously on the lagging strand in the 5' to 3' direction away from the replication fork, later joined by DNA ligase."
+  },
+  {
+    question: "Enhancers in eukaryotic gene regulation:",
+    options: ["Always function within 100 bp of the promoter", "Can function at great distances from the gene they regulate", "Only work in prokaryotes", "Inhibit transcription when bound by repressors"],
+    correctIndex: 1,
+    explanation: "Enhancers are cis-acting regulatory elements that can be thousands of base pairs from the regulated gene. They function by looping DNA to interact with the promoter through transcription factor binding."
+  },
+  {
+    question: "Which of the following is a post-translational modification?",
+    options: ["5' capping of mRNA", "Phosphorylation of a protein", "Splicing of pre-mRNA", "DNA methylation"],
+    correctIndex: 1,
+    explanation: "Phosphorylation is a common post-translational modification where kinases add phosphate groups to serine, threonine, or tyrosine residues, activating or deactivating proteins."
+  },
+  {
+    question: "The central dogma of molecular biology states:",
+    options: ["DNA to RNA to Protein", "Protein to RNA to DNA", "RNA to DNA to Protein", "Protein to DNA to RNA"],
+    correctIndex: 0,
+    explanation: "The central dogma describes genetic information flow: DNA is transcribed to mRNA, then translated to protein. Exceptions include reverse transcription in retroviruses."
+  },
+  {
+    question: "Epigenetic modifications include all of the following EXCEPT:",
+    options: ["DNA methylation", "Histone acetylation", "Chromatin remodeling", "Changes in nucleotide sequence"],
+    correctIndex: 3,
+    explanation: "Epigenetic modifications alter gene expression without changing the DNA sequence. They include DNA methylation, histone modifications, and chromatin remodeling."
+  },
+
+  // ==================== GENETICS ====================
+  {
+    question: "In a dihybrid cross (AaBb x AaBb), what is the expected phenotypic ratio in the F2 generation?",
+    options: ["9:3:3:1", "1:1:1:1", "3:1", "9:6:1"],
+    correctIndex: 0,
+    explanation: "In a dihybrid cross with independent assortment, the F2 generation shows 9/16 both dominant, 3/16 first dominant only, 3/16 second dominant only, and 1/16 both recessive."
+  },
+  {
+    question: "In sickle cell anemia, a single nucleotide change in the beta-globin gene results in:",
+    options: ["Glu to Val at position 6", "His to Leu at position 6", "Val to Glu at position 6", "Leu to His at position 6"],
+    correctIndex: 0,
+    explanation: "Sickle cell anemia is caused by a point mutation (GAG to GTG) in the beta-globin gene, substituting glutamic acid (Glu) with valine (Val) at position 6 of the beta-globin chain."
+  },
+  {
+    question: "Which of the following is a characteristic of mitochondrial inheritance?",
+    options: ["Father-to-child transmission", "Mother-to-child transmission", "X-linked pattern", "Autosomal dominant pattern"],
+    correctIndex: 1,
+    explanation: "Mitochondrial DNA is inherited exclusively from the mother because mitochondria in sperm are typically degraded after fertilization, resulting in mother-to-child transmission."
   },
   {
     question: "Which of the following is an example of codominance?",
     options: ["Skin color inheritance", "ABO blood group inheritance", "Height inheritance", "Eye color inheritance"],
     correctIndex: 1,
-    explanation: "ABO blood groups demonstrate codominance: when both A and B alleles are present (genotype IAIB), both antigens are expressed equally on red blood cells, resulting in blood type AB."
+    explanation: "ABO blood groups demonstrate codominance: when both A and B alleles are present (genotype IAIB), both antigens are expressed equally, resulting in blood type AB."
   },
   {
-    question: "The enzyme responsible for unwinding the DNA double helix during replication is:",
-    options: ["DNA polymerase", "DNA ligase", "Helicase", "Primase"],
-    correctIndex: 2,
-    explanation: "Helicase breaks the hydrogen bonds between complementary base pairs, unwinding the DNA double helix to create the replication fork. It works in conjunction with single-strand binding proteins to stabilize the unwound strands."
-  },
-  {
-    question: "Which of the following structures is found in plant cells but NOT in animal cells?",
-    options: ["Ribosomes", "Mitochondria", "Central vacuole", "Golgi apparatus"],
-    correctIndex: 2,
-    explanation: "The central vacuole is a large, membrane-bound organelle found in mature plant cells that stores water, nutrients, and waste products. It maintains turgor pressure, which provides structural support to the plant."
-  },
-  {
-    question: "What is the role of mRNA in protein synthesis?",
-    options: ["Carries amino acids to ribosomes", "Transfers genetic code from DNA to ribosomes", "Forms the structural component of ribosomes", "Catalyzes peptide bond formation"],
+    question: "A cross between homozygous dominant and homozygous recessive produces F1 offspring that are self-crossed. What percentage of F2 will show the recessive phenotype?",
+    options: ["0%", "25%", "50%", "75%"],
     correctIndex: 1,
-    explanation: "Messenger RNA (mRNA) carries the genetic information from DNA (in the nucleus) to ribosomes (in the cytoplasm), where it serves as a template for protein synthesis during translation."
+    explanation: "In a monohybrid cross, F1 (Aa) produces F2 in a 3:1 ratio. Thus, 25% of F2 offspring will be homozygous recessive (aa) and show the recessive phenotype."
   },
   {
-    question: "Which of the following is NOT a function of proteins?",
-    options: ["Enzymatic catalysis", "Structural support", "Long-term energy storage", "Immune defense"],
-    correctIndex: 2,
-    explanation: "Proteins serve many functions (enzymes, structure, transport, defense, signaling, movement) but long-term energy storage is primarily the role of lipids (fats) and carbohydrates (glycogen/starch)."
+    question: "Epistasis occurs when:",
+    options: ["Two genes are on the same chromosome", "One gene masks or interferes with the expression of another", "Alleles of the same gene interact", "Environmental factors affect gene expression"],
+    correctIndex: 1,
+    explanation: "Epistasis is gene interaction where one gene (epistatic) masks or modifies expression of another (hypostatic). For example, coat color in Labrador retrievers depends on two interacting genes."
   },
+  {
+    question: "The probability of event A is 3/4 and independent event B is 2/3. What is the probability of both occurring?",
+    options: ["1/2", "5/7", "1/4", "6/12"],
+    correctIndex: 0,
+    explanation: "For independent events, multiply individual probabilities: (3/4) x (2/3) = 6/12 = 1/2."
+  },
+  {
+    question: "Which chromosomal abnormality results in 47 chromosomes with an extra X chromosome in males?",
+    options: ["Turner syndrome", "Klinefelter syndrome", "Down syndrome", "Triple X syndrome"],
+    correctIndex: 1,
+    explanation: "Klinefelter syndrome (47, XXY) occurs when a male has an extra X chromosome, causing tall stature, small testes, reduced fertility, and sometimes gynecomastia."
+  },
+  {
+    question: "Which of the following is a sex-linked recessive disorder?",
+    options: ["Huntington's disease", "Cystic fibrosis", "Hemophilia A", "Sickle cell anemia"],
+    correctIndex: 2,
+    explanation: "Hemophilia A is X-linked recessive, caused by deficiency of clotting factor VIII. Males are more commonly affected because they have only one X chromosome."
+  },
+  {
+    question: "If a population is in Hardy-Weinberg equilibrium with a dominant allele frequency of 0.7, what is the frequency of heterozygous individuals?",
+    options: ["0.49", "0.42", "0.09", "0.21"],
+    correctIndex: 1,
+    explanation: "Using p^2 + 2pq + q^2 = 1, where p = 0.7 and q = 0.3: 2pq = 2(0.7)(0.3) = 0.42. Thus, 42% are heterozygous."
+  },
+  {
+    question: "Nondisjunction during meiosis I results in gametes that have:",
+    options: ["One fewer chromosome (n-1)", "One extra chromosome (n+1)", "Either n+1 or n-1 chromosomes", "Normal chromosome number (n)"],
+    correctIndex: 2,
+    explanation: "Nondisjunction in meiosis I causes homologous chromosomes to fail to separate, producing gametes with either an extra (n+1) or one fewer (n-1) chromosome, leading to aneuploidy."
+  },
+  {
+    question: "Testcross is used to determine:",
+    options: ["Genotype of a homozygous dominant individual", "Whether a dominant-phenotype individual is homozygous or heterozygous", "Number of chromosomes in an organism", "Sex of an offspring"],
+    correctIndex: 1,
+    explanation: "A testcross crosses a dominant-phenotype individual with a homozygous recessive. If any offspring show the recessive phenotype, the unknown parent must be heterozygous."
+  },
+  {
+    question: "Polygenic inheritance is characterized by:",
+    options: ["One gene controlling one trait", "Multiple genes contributing to a single phenotype with continuous variation", "Genes located on sex chromosomes", "Genes that are always expressed"],
+    correctIndex: 1,
+    explanation: "Polygenic inheritance involves multiple genes collectively influencing a single phenotypic trait, producing continuous variation. Examples include human height, skin color, and intelligence."
+  },
+  {
+    question: "Which of the following describes pleiotropy?",
+    options: ["Multiple alleles for one gene", "One gene affecting multiple phenotypic traits", "Two genes affecting one trait", "Genes located at different loci"],
+    correctIndex: 1,
+    explanation: "Pleiotropy occurs when a single gene influences multiple, seemingly unrelated traits. For example, the sickle cell gene affects red blood cell shape, organ function, and disease resistance."
+  },
+  {
+    question: "A geneticist crosses a red-flowered plant with a white-flowered plant and all F1 offspring are pink. This is an example of:",
+    options: ["Complete dominance", "Incomplete dominance", "Codominance", "Epistasis"],
+    correctIndex: 1,
+    explanation: "Incomplete dominance produces an intermediate phenotype when neither allele is completely dominant. Pink flowers (Rr) represent a blend of red (RR) and white (rr) phenotypes."
+  },
+
+  // ==================== HUMAN PHYSIOLOGY ====================
+  {
+    question: "The Frank-Starling mechanism of the heart describes:",
+    options: ["Relationship between heart rate and blood pressure", "Relationship between end-diastolic volume and stroke volume", "Effect of sympathetic stimulation on heart rate", "Regulation of cardiac output by the brain"],
+    correctIndex: 1,
+    explanation: "The Frank-Starling mechanism states that stroke volume increases with greater end-diastolic volume (preload), within physiological limits."
+  },
+  {
+    question: "Which hormone primarily regulates blood calcium through its action on bones, kidneys, and intestines?",
+    options: ["Thyroxine", "Calcitonin", "Parathyroid hormone (PTH)", "Aldosterone"],
+    correctIndex: 2,
+    explanation: "PTH is secreted by parathyroid glands when blood calcium is low. It increases calcium by stimulating osteoclasts, increasing renal calcium reabsorption, and promoting vitamin D activation for intestinal absorption."
+  },
+  {
+    question: "The Countercurrent multiplier system is found in:",
+    options: ["Liver", "Lung", "Kidney (Loop of Henle)", "Thyroid gland"],
+    correctIndex: 2,
+    explanation: "The countercurrent multiplier operates in the Loop of Henle. The descending limb is permeable to water while the ascending limb actively transports NaCl, creating a medullary osmotic gradient."
+  },
+  {
+    question: "Which neurotransmitter is primarily involved at the neuromuscular junction?",
+    options: ["Dopamine", "GABA", "Acetylcholine", "Serotonin"],
+    correctIndex: 2,
+    explanation: "Acetylcholine (ACh) is released at the neuromuscular junction and binds nicotinic receptors on the motor end plate, triggering muscle contraction through depolarization."
+  },
+  {
+    question: "Which blood vessels have the highest resistance to blood flow?",
+    options: ["Aorta", "Capillaries", "Arterioles", "Venules"],
+    correctIndex: 2,
+    explanation: "Arterioles have the highest resistance due to their small diameter and thick smooth muscle walls. They are the primary site of vascular resistance regulation."
+  },
+  {
+    question: "The respiratory exchange ratio (RER) indicates:",
+    options: ["Ratio of O2 consumed to CO2 produced", "Ratio of CO2 produced to O2 consumed", "Total lung capacity", "Tidal volume"],
+    correctIndex: 1,
+    explanation: "RER = VCO2/VO2. An RER of 1.0 indicates pure carbohydrate metabolism, while 0.7 indicates pure fat metabolism."
+  },
+  {
+    question: "Which hormone stimulates the release of bile from the gallbladder?",
+    options: ["Gastrin", "Secretin", "Cholecystokinin (CCK)", "Gastric inhibitory peptide (GIP)"],
+    correctIndex: 2,
+    explanation: "CCK is released by I-cells in the duodenum in response to fats and proteins. It stimulates gallbladder contraction (releasing bile) and pancreatic enzyme secretion."
+  },
+  {
+    question: "Hemoglobin has a higher affinity for oxygen when:",
+    options: ["pH is low and temperature is high", "pH is high and temperature is low", "CO2 concentration is high", "2,3-BPG levels are high"],
+    correctIndex: 1,
+    explanation: "Hemoglobin has higher O2 affinity at high pH (low H+) and low temperature (left-shifted curve). This occurs in the lungs, facilitating O2 loading."
+  },
+  {
+    question: "The sinoatrial (SA) node is the heart's natural pacemaker because:",
+    options: ["It has the fastest conduction velocity", "It generates spontaneous action potentials", "It connects atria to ventricles", "It receives the most parasympathetic input"],
+    correctIndex: 1,
+    explanation: "The SA node spontaneously depolarizes at approximately 75 bpm through the funny current (If), faster than any other cardiac tissue, making it the primary pacemaker."
+  },
+  {
+    question: "Antibodies are produced by:",
+    options: ["T-helper cells", "B-lymphocytes (plasma cells)", "Macrophages", "Natural killer cells"],
+    correctIndex: 1,
+    explanation: "Antibodies (immunoglobulins) are produced by plasma cells, differentiated B-lymphocytes. Each produces antibodies specific to one antigen epitope for humoral immunity."
+  },
+  {
+    question: "The glomerular filtration rate (GFR) is primarily regulated by:",
+    options: ["Afferent arteriole", "Efferent arteriole", "Both afferent and efferent arterioles", "Collecting duct reabsorption"],
+    correctIndex: 2,
+    explanation: "GFR is regulated by both afferent and efferent arterioles. Afferent constriction decreases GFR; efferent constriction increases GFR. Autoregulation, sympathetic input, and hormones modulate both."
+  },
+  {
+    question: "Which is a function of the liver in metabolism?",
+    options: ["Insulin production", "Gluconeogenesis", "Thyroid hormone synthesis", "Red blood cell production"],
+    correctIndex: 1,
+    explanation: "The liver performs gluconeogenesis (synthesis of glucose from non-carbohydrate sources) especially during fasting. It also stores glycogen, synthesizes plasma proteins, and detoxifies substances."
+  },
+  {
+    question: "The basal metabolic rate (BMR) is most affected by:",
+    options: ["Physical activity level", "Thyroid hormone levels", "Diet composition", "Sleep duration"],
+    correctIndex: 1,
+    explanation: "Thyroid hormones (T3 and T4) are the primary BMR regulators. Hyperthyroidism increases BMR while hypothyroidism decreases it."
+  },
+  {
+    question: "Which structure in the kidney is responsible for urine concentration?",
+    options: ["Glomerulus", "Bowman's capsule", "Collecting duct", "Proximal convoluted tubule"],
+    correctIndex: 2,
+    explanation: "The collecting duct passes through the hypertonic medulla. In the presence of ADH, it becomes permeable to water, allowing water reabsorption and urine concentration."
+  },
+  {
+    question: "Oxygen dissociation curve shifts to the RIGHT when:",
+    options: ["Temperature decreases", "pH increases", "CO2 levels increase", "2,3-BPG decreases"],
+    correctIndex: 2,
+    explanation: "A right shift (Bohr effect) decreases O2 affinity, facilitating O2 unloading. It occurs with increased CO2, temperature, 2,3-BPG, and decreased pH in metabolically active tissues."
+  },
+  {
+    question: "The primary site of nutrient absorption is:",
+    options: ["Stomach", "Small intestine (jejunum)", "Large intestine", "Duodenum"],
+    correctIndex: 1,
+    explanation: "The jejunum is the primary absorption site for most nutrients. Villi and microvilli dramatically increase surface area for efficient absorption."
+  },
+  {
+    question: "Which correctly describes the cardiac cycle?",
+    options: ["Systole then relaxation then diastole", "Atrial then ventricular then diastole", "Isovolumetric contraction then ejection then isovolumetric relaxation then filling", "Diastole then systole then relaxation"],
+    correctIndex: 2,
+    explanation: "The cardiac cycle: (1) Isovolumetric contraction (valves closed, pressure rises), (2) Ejection (semilunar valves open), (3) Isovolumetric relaxation (valves closed), (4) Filling (AV valves open)."
+  },
+  {
+    question: "Which blood group is the universal donor?",
+    options: ["A positive", "B negative", "AB positive", "O negative"],
+    correctIndex: 3,
+    explanation: "O negative blood lacks A, B, and Rh antigens, so it can be transfused to any blood type without immune reaction."
+  },
+  {
+    question: "The renin-angiotensin-aldosterone system (RAAS) primarily regulates:",
+    options: ["Blood glucose levels", "Blood pressure and fluid balance", "Calcium metabolism", "Body temperature"],
+    correctIndex: 1,
+    explanation: "RAAS regulates blood pressure and fluid balance. Renin converts angiotensinogen to angiotensin I, then II, causing vasoconstriction and stimulating aldosterone release for sodium and water retention."
+  },
+  {
+    question: "Which vitamin deficiency causes night blindness?",
+    options: ["Vitamin A", "Vitamin B12", "Vitamin C", "Vitamin D"],
+    correctIndex: 0,
+    explanation: "Vitamin A (retinol) is essential for rhodopsin synthesis in rod cells. Deficiency leads to nyctalopia (night blindness) and can progress to xerophthalmia."
+  },
+  {
+    question: "The epiglottis prevents food from entering the:",
+    options: ["Esophagus", "Trachea", "Pharynx", "Nasal cavity"],
+    correctIndex: 1,
+    explanation: "The epiglottis covers the glottis (laryngeal opening) during swallowing, directing food into the esophagus and preventing aspiration into the airway."
+  },
+  {
+    question: "Which blood cell primarily fights parasitic infections?",
+    options: ["Neutrophils", "Lymphocytes", "Eosinophils", "Monocytes"],
+    correctIndex: 2,
+    explanation: "Eosinophils defend against parasitic infections (especially helminths) by releasing toxic granule contents. They are also involved in allergic reactions."
+  },
+  {
+    question: "Which is a feature of the adaptive immune system?",
+    options: ["Non-specific response to all pathogens", "Immediate response within minutes", "Immunological memory for faster secondary response", "Only physical barriers"],
+    correctIndex: 2,
+    explanation: "The adaptive immune system has specificity and memory. Memory B and T cells persist after initial exposure, enabling a faster, stronger response upon re-exposure."
+  },
+  {
+    question: "The hypothalamus links the nervous and endocrine systems primarily through control of:",
+    options: ["The adrenal cortex", "The thyroid gland", "The anterior pituitary gland", "The parathyroid glands"],
+    correctIndex: 2,
+    explanation: "The hypothalamus regulates the anterior pituitary via releasing and inhibiting hormones (TRH, CRH, GnRH, GHRH, somatostatin, dopamine) through the hypothalamic-hypophyseal portal system."
+  },
+  {
+    question: "Which type of white blood cell is responsible for immunological memory and rapid secondary immune responses?",
+    options: ["Neutrophils", "Memory T and B cells", "Macrophages", "Dendritic cells"],
+    correctIndex: 1,
+    explanation: "Memory T and B cells are long-lived lymphocytes that persist after initial antigen exposure. Upon re-exposure, they mount a rapid and amplified secondary immune response, which is the basis of vaccination."
+  },
+
+  // ==================== PLANT PHYSIOLOGY ====================
+  {
+    question: "Which pigment is primarily responsible for the light-dependent reactions of photosynthesis?",
+    options: ["Carotenoids", "Chlorophyll a", "Phycocyanin", "Xanthophyll"],
+    correctIndex: 1,
+    explanation: "Chlorophyll a is the primary pigment that transfers light energy to the reaction center (P680 in PSII and P700 in PSI) for photochemical conversion in the light-dependent reactions."
+  },
+  {
+    question: "The Calvin cycle takes place in:",
+    options: ["Thylakoid membrane", "Stroma of chloroplast", "Cytoplasm", "Mitochondrial matrix"],
+    correctIndex: 1,
+    explanation: "The Calvin cycle (light-independent reactions) occurs in the chloroplast stroma, where CO2 is fixed into organic molecules using ATP and NADPH from the light-dependent reactions."
+  },
+  {
+    question: "Which plant hormone is primarily responsible for cell elongation and apical dominance?",
+    options: ["Cytokinin", "Gibberellin", "Auxin", "Abscisic acid"],
+    correctIndex: 2,
+    explanation: "Auxin (IAA) is produced in the apical meristem and promotes cell elongation, maintains apical dominance, and influences phototropism and gravitropism."
+  },
+  {
+    question: "What is the primary function of transpiration in plants?",
+    options: ["CO2 absorption", "Water and mineral transport", "Oxygen release", "Sugar transport"],
+    correctIndex: 1,
+    explanation: "Transpiration creates negative pressure (tension) that pulls water and dissolved minerals from roots through the xylem to leaves (cohesion-tension theory)."
+  },
+  {
+    question: "CAM plants minimize photorespiration by:",
+    options: ["Opening stomata only at night", "Fixing CO2 into C4 compounds", "Having thick waxy cuticles", "Using bundle sheath cells"],
+    correctIndex: 0,
+    explanation: "CAM plants open stomata at night to fix CO2 into malate (stored in vacuoles). During the day, stomata close to conserve water while malate provides CO2 for the Calvin cycle."
+  },
+  {
+    question: "The photoprotective pigment preventing damage from excessive light energy is:",
+    options: ["Chlorophyll b", "Carotenoids", "Phycocyanin", "Bacteriochlorophyll"],
+    correctIndex: 1,
+    explanation: "Carotenoids dissipate excess light energy as heat through the xanthophyll cycle, preventing reactive oxygen species formation that could damage photosynthetic machinery."
+  },
+  {
+    question: "C4 plants have higher photosynthetic efficiency in hot, dry conditions because they:",
+    options: ["Open stomata at night", "Use PEPC for initial CO2 fixation with higher affinity than Rubisco", "Have thicker leaves", "Use only cyclic photophosphorylation"],
+    correctIndex: 1,
+    explanation: "C4 plants use PEPC for initial CO2 fixation. PEPC has much higher affinity for CO2 than Rubisco and does not bind O2, concentrating CO2 in bundle sheath cells for the Calvin cycle."
+  },
+  {
+    question: "The cohesion-tension theory explains water movement through:",
+    options: ["Active pumping by root cells", "Adhesion to xylem walls and cohesion among water molecules", "Osmotic pressure in root cells only", "Translocation by companion cells"],
+    correctIndex: 1,
+    explanation: "Water is pulled upward through xylem by transpiration. Water molecules adhere to xylem walls (adhesion) and stick to each other (cohesion), forming a continuous water column from roots to leaves."
+  },
+  {
+    question: "Which is a role of gibberellins in plant growth?",
+    options: ["Promoting seed dormancy", "Stimulating stem elongation and seed germination", "Inducing leaf abscission", "Closing stomata during drought"],
+    correctIndex: 1,
+    explanation: "Gibberellins promote stem elongation, seed germination (by inducing alpha-amylase to break down starch), and flowering. They counteract abscisic acid effects."
+  },
+  {
+    question: "The xylem in plants transports:",
+    options: ["Organic nutrients from leaves to roots", "Water and dissolved minerals from roots to shoots", "Hormones from meristems to target tissues", "Oxygen from leaves to roots"],
+    correctIndex: 1,
+    explanation: "Xylem transports water and dissolved mineral ions from roots to aerial parts. Xylem vessels are dead, hollow cells with lignified walls providing structural support."
+  },
+
+  // ==================== ECOLOGY ====================
+  {
+    question: "Which represents a density-dependent factor in population regulation?",
+    options: ["Flood", "Disease", "Wildfire", "Drought"],
+    correctIndex: 1,
+    explanation: "Disease is density-dependent: transmission rate increases with population density. Crowded populations facilitate spread of infectious diseases, acting as a regulatory mechanism."
+  },
+  {
+    question: "The 10% rule in ecology states that:",
+    options: ["10% of species are keystone species", "Only 10% of energy transfers between trophic levels", "10% of a habitat should be protected", "Only 10% of individuals survive"],
+    correctIndex: 1,
+    explanation: "Approximately 10% of energy at one trophic level transfers to the next. The remaining 90% is lost as heat through cellular respiration."
+  },
+  {
+    question: "Which ecological term describes an organism's role within its ecosystem?",
+    options: ["Habitat", "Niche", "Biome", "Population"],
+    correctIndex: 1,
+    explanation: "An ecological niche describes the functional role including diet, habitat, interactions with other species, and resource use. It is broader than habitat alone."
+  },
+  {
+    question: "Succession on previously uninhabited land (e.g., bare rock) is called:",
+    options: ["Secondary succession", "Primary succession", "Climax community", "Pioneer community"],
+    correctIndex: 1,
+    explanation: "Primary succession occurs on barren land with no previous ecosystem. Pioneer species like lichens colonize first, gradually building soil for later species."
+  },
+  {
+    question: "The greenhouse effect is primarily caused by:",
+    options: ["Oxygen absorbing infrared radiation", "CO2 and other gases trapping heat in the atmosphere", "UV radiation reflecting off ice caps", "Nitrogen cooling the atmosphere"],
+    correctIndex: 1,
+    explanation: "Greenhouse gases (CO2, CH4, N2O, water vapor) absorb and re-emit infrared radiation, trapping heat. Enhanced greenhouse effect from human activities leads to global warming."
+  },
+  {
+    question: "Which is an example of a keystone species?",
+    options: ["Grass in a grassland", "Wolves in Yellowstone", "Bacteria in soil", "Algae in the ocean"],
+    correctIndex: 1,
+    explanation: "Wolves in Yellowstone are a classic keystone species. Their reintroduction controlled elk populations, allowing vegetation recovery, which benefited beavers, birds, and fish - a trophic cascade."
+  },
+  {
+    question: "Biodiversity hotspots are characterized by:",
+    options: ["High species richness and high endemism", "Low species richness but high endemism", "High species richness but low endemism", "Low species richness and low endemism"],
+    correctIndex: 0,
+    explanation: "Biodiversity hotspots must have high species richness (many species) AND high endemism (many species found nowhere else). They also must have lost at least 70% of original habitat."
+  },
+  {
+    question: "An ecological pyramid of energy always shows:",
+    options: ["Increasing energy at higher trophic levels", "Equal energy at all trophic levels", "Decreasing energy at higher trophic levels", "Variable energy patterns"],
+    correctIndex: 2,
+    explanation: "Energy pyramids always decrease upward because only about 10% of energy transfers between levels. The rest is lost as heat through metabolism."
+  },
+  {
+    question: "Which is a consequence of eutrophication?",
+    options: ["Increased oxygen levels in water", "Algal blooms followed by dead zones", "Enhanced biodiversity", "Decreased water temperature"],
+    correctIndex: 1,
+    explanation: "Eutrophication (excess nutrient input) causes algal blooms that block light and, upon decomposition, deplete dissolved oxygen, creating hypoxic dead zones that kill aquatic organisms."
+  },
+  {
+    question: "The concept of carrying capacity refers to:",
+    options: ["Maximum population size the environment can sustain", "Minimum viable population size", "Current population size", "Growth rate of a population"],
+    correctIndex: 0,
+    explanation: "Carrying capacity (K) is the maximum population size an environment can sustain indefinitely given available resources, habitat, and other ecological factors."
+  },
+
+  // ==================== EVOLUTION ====================
+  {
+    question: "Which type of natural selection favors intermediate phenotypes and selects against extremes?",
+    options: ["Directional selection", "Disruptive selection", "Stabilizing selection", "Sexual selection"],
+    correctIndex: 2,
+    explanation: "Stabilizing selection favors intermediates and selects against both extremes. Example: human birth weight stabilized around 3.5 kg with higher mortality at very low or high weights."
+  },
+  {
+    question: "The Hardy-Weinberg principle states allele frequencies remain constant in the absence of:",
+    options: ["Natural selection only", "Genetic drift only", "All evolutionary forces", "Mutation only"],
+    correctIndex: 2,
+    explanation: "Hardy-Weinberg equilibrium requires no natural selection, genetic drift, gene flow, mutation, or non-random mating. Any deviation from these conditions causes evolution."
+  },
+  {
+    question: "Which is an example of convergent evolution?",
+    options: ["Wings of bats and birds", "Forelimbs of whales and humans", "Eyes of octopus and humans", "Both A and C"],
+    correctIndex: 3,
+    explanation: "Convergent evolution produces similar structures in unrelated species from similar selective pressures. Bat/bird wings and octopus/vertebrate camera eyes evolved independently."
+  },
+  {
+    question: "The bottleneck effect is an example of:",
+    options: ["Natural selection", "Genetic drift", "Gene flow", "Mutation"],
+    correctIndex: 1,
+    explanation: "The bottleneck effect occurs when a population is drastically reduced, causing random loss of alleles. The surviving population has reduced genetic diversity regardless of fitness."
+  },
+  {
+    question: "Homologous structures indicate:",
+    options: ["Convergent evolution", "Common ancestry", "Similar environmental pressures", "Identical function"],
+    correctIndex: 1,
+    explanation: "Homologous structures share common embryonic origin but may have different functions (e.g., human arm, whale flipper, bat wing). They indicate descent from a common ancestor."
+  },
+  {
+    question: "Which mechanism increases genetic variation within a population?",
+    options: ["Genetic drift", "Natural selection", "Mutation", "Non-random mating"],
+    correctIndex: 2,
+    explanation: "Mutation is the ultimate source of new genetic variation, introducing novel alleles. Natural selection and genetic drift typically reduce variation, while gene flow can increase it."
+  },
+  {
+    question: "Speciation that occurs when populations are geographically separated is called:",
+    options: ["Sympatric speciation", "Allopatric speciation", "Parapatric speciation", "Polyploidy"],
+    correctIndex: 1,
+    explanation: "Allopatric speciation occurs when geographic barriers (mountains, rivers, distance) isolate populations, preventing gene flow. Over time, genetic divergence can lead to reproductive isolation."
+  },
+  {
+    question: "Vestigial structures are evidence of:",
+    options: ["Convergent evolution", "Adaptation to current environment", "Evolution from ancestors with functional versions", "Genetic drift"],
+    correctIndex: 2,
+    explanation: "Vestigial structures (human appendix, whale pelvis, flightless bird wings) are reduced versions of functional structures in ancestors, providing evidence of evolutionary history."
+  },
+  {
+    question: "In the Hardy-Weinberg equation p^2 + 2pq + q^2 = 1, what does 2pq represent?",
+    options: ["Homozygous dominant genotype frequency", "Heterozygous genotype frequency", "Homozygous recessive genotype frequency", "Recessive allele frequency"],
+    correctIndex: 1,
+    explanation: "In Hardy-Weinberg equilibrium, p^2 = homozygous dominant frequency, 2pq = heterozygous frequency, and q^2 = homozygous recessive frequency."
+  },
+  {
+    question: "Directional selection shifts the population phenotype toward:",
+    options: ["Both extremes", "The intermediate phenotype", "One extreme of the phenotypic range", "No change"],
+    correctIndex: 2,
+    explanation: "Directional selection favors one extreme phenotype, shifting the population distribution in one direction. Example: antibiotic resistance in bacteria shifts toward resistant phenotypes."
+  },
+
+  // ==================== ENZYMES ====================
+  {
+    question: "Which enzyme inhibition can be overcome by increasing substrate concentration?",
+    options: ["Non-competitive inhibition", "Competitive inhibition", "Irreversible inhibition", "Allosteric inhibition"],
+    correctIndex: 1,
+    explanation: "In competitive inhibition, the inhibitor competes for the active site. Increasing substrate concentration outcompetes the inhibitor, eventually achieving Vmax."
+  },
+  {
+    question: "The Michaelis constant (Km) represents:",
+    options: ["Maximum reaction velocity", "Substrate concentration at half Vmax", "Enzyme concentration", "Inhibition constant"],
+    correctIndex: 1,
+    explanation: "Km is the substrate concentration at which reaction velocity is half of Vmax. Lower Km indicates higher enzyme affinity for substrate."
+  },
+  {
+    question: "Which enzyme regulation involves binding at a site other than the active site?",
+    options: ["Competitive inhibition", "Allosteric regulation", "Covalent modification", "Feedback inhibition"],
+    correctIndex: 1,
+    explanation: "Allosteric regulation involves binding at sites distinct from the active site, inducing conformational changes that affect enzyme activity."
+  },
+  {
+    question: "Which feature distinguishes enzymes from inorganic catalysts?",
+    options: ["They increase activation energy", "They are consumed during reactions", "They exhibit substrate specificity", "They work at high temperatures"],
+    correctIndex: 2,
+    explanation: "Enzymes are highly specific due to the precise shape and chemical properties of their active sites (lock and key or induced fit model)."
+  },
+  {
+    question: "Denaturation of an enzyme typically results in:",
+    options: ["Increased activity", "Loss of quaternary structure only", "Loss of 3D structure and activity", "Changes in primary structure only"],
+    correctIndex: 2,
+    explanation: "Denaturation disrupts secondary, tertiary, and quaternary structures (not primary), destroying the active site shape and catalytic activity."
+  },
+  {
+    question: "In a Lineweaver-Burk plot, competitive inhibition shows:",
+    options: ["Increased Km, unchanged Vmax", "Unchanged Km, decreased Vmax", "Both Km and Vmax decreased", "Both Km and Vmax increased"],
+    correctIndex: 0,
+    explanation: "Competitive inhibitors increase apparent Km (lower apparent affinity) but do not affect Vmax because high substrate concentration overcomes the inhibition."
+  },
+  {
+    question: "Which coenzyme is derived from vitamin B3 (niacin)?",
+    options: ["FAD", "NAD+", "Coenzyme A", "TPP"],
+    correctIndex: 1,
+    explanation: "NAD+ (nicotinamide adenine dinucleotide) is derived from niacin (vitamin B3). It serves as an electron carrier in oxidation-reduction reactions in glycolysis and the Krebs cycle."
+  },
+  {
+    question: "An enzyme that catalyzes the transfer of a phosphate group is called a:",
+    options: ["Kinase", "Dehydrogenase", "Isomerase", "Ligase"],
+    correctIndex: 0,
+    explanation: "Kinases transfer phosphate groups from ATP to substrates (phosphorylation). Examples include hexokinase in glycolysis and CDKs in cell cycle regulation."
+  },
+  {
+    question: "The induced fit model of enzyme action proposes that:",
+    options: ["The active site is rigid and unchanging", "The substrate fits perfectly into the active site", "The enzyme changes shape upon substrate binding", "The enzyme is destroyed after the reaction"],
+    correctIndex: 2,
+    explanation: "The induced fit model states that the enzyme undergoes a conformational change upon substrate binding, optimizing the fit and facilitating catalysis. This is more accurate than the rigid lock-and-key model."
+  },
+  {
+    question: "Feedback inhibition in metabolic pathways involves:",
+    options: ["The first enzyme being inhibited by the end product", "The last enzyme being activated", "All enzymes being inhibited simultaneously", "No inhibition occurring"],
+    correctIndex: 0,
+    explanation: "Feedback inhibition occurs when the end product of a metabolic pathway inhibits an enzyme early in the pathway (usually the first committed step), preventing overproduction."
+  },
+
+  // ==================== BIOLOGICAL MOLECULES ====================
+  {
+    question: "Which polysaccharide serves as the primary energy storage molecule in animals?",
+    options: ["Cellulose", "Starch", "Glycogen", "Chitin"],
+    correctIndex: 2,
+    explanation: "Glycogen is the primary energy storage polysaccharide in animals, stored in liver and muscle as highly branched granules that can be quickly broken down into glucose."
+  },
+  {
+    question: "Which lipid is a major component of cell membranes and precursor for steroid hormones?",
+    options: ["Triglycerides", "Phospholipids", "Cholesterol", "Fatty acids"],
+    correctIndex: 2,
+    explanation: "Cholesterol is a sterol in animal cell membranes (regulating fluidity) and serves as the precursor for steroid hormones (testosterone, estrogen, cortisol), bile salts, and vitamin D."
+  },
+  {
+    question: "The tertiary structure of a protein is NOT stabilized by:",
+    options: ["Disulfide bonds", "Hydrogen bonds", "Peptide bonds", "Hydrophobic interactions"],
+    correctIndex: 2,
+    explanation: "Peptide bonds stabilize primary structure. Tertiary structure is stabilized by disulfide bonds, hydrogen bonds, ionic bonds, van der Waals forces, and hydrophobic interactions between R-groups."
+  },
+  {
+    question: "Which type of carbohydrate is a component of bacterial cell walls?",
+    options: ["Glycogen", "Peptidoglycan (containing NAG and NAM)", "Cellulose", "Chitin"],
+    correctIndex: 1,
+    explanation: "Peptidoglycan is a polymer of sugars (NAG and NAM) cross-linked by short peptides, forming the rigid structure of bacterial cell walls. It is the target of antibiotics like penicillin."
+  },
+  {
+    question: "Which amino acid has a sulfur-containing side chain?",
+    options: ["Leucine", "Methionine", "Valine", "Threonine"],
+    correctIndex: 1,
+    explanation: "Methionine is one of two sulfur-containing amino acids (along with cysteine). Methionine is always the first amino acid in protein synthesis (start codon AUG) and is involved in methylation reactions."
+  },
+  {
+    question: "Which of the following is a characteristic of saturated fatty acids?",
+    options: ["Contain one or more double bonds", "Liquid at room temperature", "All carbon atoms bonded to maximum hydrogen atoms", "Found mainly in plant oils"],
+    correctIndex: 2,
+    explanation: "Saturated fatty acids have no double bonds between carbon atoms, meaning each carbon is bonded to the maximum number of hydrogens. They are solid at room temperature and found in animal fats."
+  },
+  {
+    question: "ATP is best described as:",
+    options: ["A nucleic acid", "An energy carrier molecule", "A structural protein", "A signaling molecule"],
+    correctIndex: 1,
+    explanation: "ATP (adenosine triphosphate) is the primary energy currency of cells. The terminal phosphate bond is high-energy; its hydrolysis releases energy for cellular work."
+  },
+  {
+    question: "Which bond connects nucleotides in a DNA strand?",
+    options: ["Peptide bonds", "Phosphodiester bonds", "Hydrogen bonds", "Glycosidic bonds"],
+    correctIndex: 1,
+    explanation: "Phosphodiester bonds link nucleotides in DNA and RNA, connecting the 3' carbon of one sugar to the 5' carbon of the next through a phosphate group, forming the sugar-phosphate backbone."
+  },
+  {
+    question: "The quaternary structure of a protein exists when:",
+    options: ["A single polypeptide chain folds", "Multiple polypeptide chains associate together", "Only alpha helices are present", "The protein contains no disulfide bonds"],
+    correctIndex: 1,
+    explanation: "Quaternary structure exists when a protein consists of multiple polypeptide subunits. Hemoglobin (4 subunits) and antibodies (4 chains) are classic examples."
+  },
+  {
+    question: "Which carbohydrate is the main structural component of plant cell walls?",
+    options: ["Glycogen", "Starch", "Cellulose", "Chitin"],
+    correctIndex: 2,
+    explanation: "Cellulose is a linear polysaccharide of glucose linked by beta-1,4 bonds. Its straight chains form hydrogen bonds with neighboring chains, creating strong microfibrils that provide plant cell wall rigidity."
+  },
+
+  // ==================== HEALTH AND DISEASE ====================
+  {
+    question: "Which immunoglobulin is most abundant in serum and provides long-term immunity?",
+    options: ["IgA", "IgE", "IgG", "IgM"],
+    correctIndex: 2,
+    explanation: "IgG is the most abundant serum immunoglobulin (75-80%). It crosses the placenta (providing passive fetal immunity), activates complement, and is the main antibody in secondary immune responses."
+  },
+  {
+    question: "Which of the following is a viral disease?",
+    options: ["Tuberculosis", "Malaria", "Dengue fever", "Cholera"],
+    correctIndex: 2,
+    explanation: "Dengue fever is caused by the dengue virus (Flavivirus), transmitted by Aedes mosquitoes. Symptoms include high fever, severe headache, joint pain, and rash. Severe cases can develop dengue hemorrhagic fever."
+  },
+  {
+    question: "Vaccination works by:",
+    options: ["Directly killing pathogens", "Stimulating the adaptive immune system to produce memory cells", "Boosting innate immunity only", "Providing passive antibodies"],
+    correctIndex: 1,
+    explanation: "Vaccines introduce antigens (weakened/inactivated pathogens or their components) to stimulate adaptive immunity, producing memory B and T cells that enable rapid response upon future exposure."
+  },
+  {
+    question: "Which type of immunity is acquired through breast milk?",
+    options: ["Cell-mediated immunity", "Active humoral immunity", "Natural passive immunity", "Innate immunity"],
+    correctIndex: 2,
+    explanation: "Breast milk contains secretory IgA that provides natural passive immunity to the infant, protecting against gastrointestinal infections during the early months of life."
+  },
+  {
+    question: "Epidemiological studies use the term incidence to describe:",
+    options: ["Total number of existing cases in a population", "Number of new cases occurring in a specific time period", "Mortality rate from a disease", "Prevalence of risk factors"],
+    correctIndex: 1,
+    explanation: "Incidence measures new cases occurring in a population over a specific time period, indicating the rate of disease occurrence. Prevalence measures total existing cases at a given time."
+  },
+  {
+    question: "Antibiotic resistance develops primarily through:",
+    options: ["Overuse of antibiotics selecting for resistant bacteria", "Viruses mutating inside bacteria", "The immune system weakening", "Poor hygiene practices"],
+    correctIndex: 0,
+    explanation: "Antibiotic overuse creates selective pressure: susceptible bacteria die while resistant ones survive and reproduce. Resistance genes spread through plasmid transfer, conjugation, and transduction."
+  },
+  {
+    question: "Which type of white blood cell is primarily involved in phagocytosis of bacteria?",
+    options: ["B-lymphocytes", "Neutrophils", "Basophils", "Natural killer cells"],
+    correctIndex: 1,
+    explanation: "Neutrophils are the most abundant leukocytes and first responders to bacterial infection. They phagocytose (engulf and destroy) bacteria using reactive oxygen species and enzymatic digestion."
+  },
+  {
+    question: "Tuberculosis is caused by:",
+    options: ["A virus", "A bacterium (Mycobacterium tuberculosis)", "A fungus", "A parasite"],
+    correctIndex: 1,
+    explanation: "Tuberculosis is caused by Mycobacterium tuberculosis, an acid-fast bacterium that primarily infects the lungs. It spreads through airborne droplets and can remain latent for years."
+  },
+  {
+    question: "Which blood test result indicates a bacterial infection?",
+    options: ["Decreased white blood cell count", "Increased lymphocyte count", "Increased neutrophil count", "Decreased platelet count"],
+    correctIndex: 2,
+    explanation: "Bacterial infections typically cause elevated neutrophil counts (neutrophilia) as the body mounts an acute inflammatory response. Lymphocyte elevation is more characteristic of viral infections."
+  },
+  {
+    question: "HIV primarily targets which immune cells?",
+    options: ["B-lymphocytes", "Macrophages", "CD4+ T-helper cells", "Neutrophils"],
+    correctIndex: 2,
+    explanation: "HIV specifically infects CD4+ T-helper cells through the CD4 receptor and CCR5/CXCR4 co-receptors. Progressive depletion of these cells compromises the adaptive immune system, leading to AIDS."
+  },
+
+  // ==================== CLASSIFICATION ====================
+  {
+    question: "In the five-kingdom classification, which kingdom includes organisms with both plant and animal characteristics?",
+    options: ["Monera", "Protista", "Fungi", "Plantae"],
+    correctIndex: 1,
+    explanation: "Kingdom Protista includes unicellular eukaryotes that don't fit other kingdoms. Some protists (like Euglena) are autotrophic like plants but can also be heterotrophic like animals."
+  },
+  {
+    question: "Which taxonomic rank is between class and order?",
+    options: ["Phylum", "Family", "Division", "None - class and order are adjacent"],
+    correctIndex: 3,
+    explanation: "The standard taxonomic hierarchy is: Domain, Kingdom, Phylum, Class, Order, Family, Genus, Species. Class and order are adjacent ranks with no rank between them."
+  },
+  {
+    question: "Binomial nomenclature was introduced by:",
+    options: ["Charles Darwin", "Carolus Linnaeus", "Gregor Mendel", "Robert Whittaker"],
+    correctIndex: 1,
+    explanation: "Carl Linnaeus (Carolus Linnaeus) developed binomial nomenclature in the 18th century. Each species is given a two-part Latin name: genus (capitalized) + specific epithet (lowercase)."
+  },
+  {
+    question: "Which kingdom includes organisms that are unicellular and lack a membrane-bound nucleus?",
+    options: ["Protista", "Fungi", "Monera", "Plantae"],
+    correctIndex: 2,
+    explanation: "Kingdom Monera includes all prokaryotes (bacteria and archaea) that lack membrane-bound nuclei and organelles. They are the most ancient and diverse group of organisms."
+  },
+  {
+    question: "Phylogeny refers to:",
+    options: ["The classification of organisms into groups", "The evolutionary history and relationships among organisms", "The study of organism morphology", "The naming of species"],
+    correctIndex: 1,
+    explanation: "Phylogeny is the study of evolutionary relationships among organisms, typically represented as phylogenetic trees (cladograms) showing common ancestry and divergence over time."
+  },
+  {
+    question: "Which of the following is NOT a domain in the three-domain system?",
+    options: ["Bacteria", "Archaea", "Eukarya", "Monera"],
+    correctIndex: 3,
+    explanation: "The three-domain system (Carl Woese, 1990) classifies life into Bacteria, Archaea, and Eukarya. Monera is a kingdom in the five-kingdom system, not a domain in the three-domain system."
+  },
+  {
+    question: "Dichotomous keys are used for:",
+    options: ["Determining evolutionary relationships", "Identifying organisms through sequential choices", "Classifying organisms into kingdoms", "Measuring genetic diversity"],
+    correctIndex: 1,
+    explanation: "Dichotomous keys provide a series of paired statements (choices) that guide the user to correctly identify an organism based on its observable characteristics."
+  },
+  {
+    question: "Which organism would be classified in the same phylum as humans?",
+    options: ["Jellyfish (Cnidaria)", "Spider (Arthropoda)", "Snake (Chordata)", "Sponge (Porifera)"],
+    correctIndex: 2,
+    explanation: "Both humans and snakes belong to Phylum Chordata, characterized by a notochord, dorsal hollow nerve cord, pharyngeal slits, and post-anal tail at some stage of development."
+  },
+  {
+    question: "The taxon that includes the most organisms is:",
+    options: ["Species", "Genus", "Kingdom", "Order"],
+    correctIndex: 2,
+    explanation: "In the taxonomic hierarchy, higher ranks include more organisms. Kingdom is the highest standard rank (above class, order, family, genus, species), encompassing the broadest diversity."
+  },
+  {
+    question: "Viruses are generally NOT classified in any kingdom because they:",
+    options: ["Are too small to be observed", "Lack cellular structure and cannot reproduce independently", "Are not found in nature", "Have DNA instead of RNA"],
+    correctIndex: 1,
+    explanation: "Viruses lack cellular structure, organelles, and metabolic machinery. They cannot reproduce independently and require a host cell. Most biologists consider them non-living, placing them outside the kingdom system."
+  },
+
+  // ==================== REPRODUCTION ====================
+  {
+    question: "Which process results in genetically identical offspring from a single parent?",
+    options: ["Meiosis", "Fertilization", "Binary fission", "Crossing over"],
+    correctIndex: 2,
+    explanation: "Binary fission is asexual reproduction where a single cell divides into two genetically identical daughter cells. It is the primary reproduction method in prokaryotes."
+  },
+  {
+    question: "During oogenesis, the unequal division of cytoplasm produces:",
+    options: ["Four equal-sized egg cells", "One large ovum and small polar bodies", "Two identical egg cells", "Four sperm cells"],
+    correctIndex: 1,
+    explanation: "Oogenesis produces one large ovum (containing most cytoplasm for embryonic development) and two or three small polar bodies that eventually degenerate, conserving cytoplasmic resources."
+  },
+  {
+    question: "Which structure in the human female reproductive system produces progesterone after ovulation?",
+    options: ["Ovary", "Corpus luteum", "Placenta", "Endometrium"],
+    correctIndex: 1,
+    explanation: "The corpus luteum forms from the ruptured follicle after ovulation and secretes progesterone to maintain the endometrium. If fertilization doesn't occur, it degenerates into the corpus albicans."
+  },
+  {
+    question: "Fertilization in humans normally occurs in the:",
+    options: ["Uterus", "Ovary", "Fallopian tube (ampulla)", "Cervix"],
+    correctIndex: 2,
+    explanation: "Fertilization typically occurs in the ampulla of the fallopian tube, where the ovum meets sperm. The zygote then travels down to the uterus for implantation over 6-7 days."
+  },
+  {
+    question: "Which hormone triggers ovulation in the human menstrual cycle?",
+    options: ["FSH", "LH surge", "Estrogen", "Progesterone"],
+    correctIndex: 1,
+    explanation: "The LH surge (triggered by high estrogen levels via positive feedback) causes the mature follicle to rupture, releasing the secondary oocyte (ovulation) approximately 36 hours after the surge."
+  },
+  {
+    question: "Which type of asexual reproduction involves the formation of a genetic copy within a parent organism that is later released?",
+    options: ["Fission", "Budding", "Vegetative propagation", "Sporulation"],
+    correctIndex: 1,
+    explanation: "Budding involves a new organism growing from a bud (outgrowth) on the parent. In Hydra, the bud develops, develops tentacles, and eventually detaches as an independent organism."
+  },
+  {
+    question: "In mammals, the placenta is formed from:",
+    options: ["Only maternal tissue", "Only fetal tissue", "Both fetal chorion and maternal endometrium", "The yolk sac"],
+    correctIndex: 2,
+    explanation: "The placenta is a dual-origin organ: the fetal chorionic villi interdigitate with the maternal endometrium. It provides nutrient/gas exchange and produces hormones (hCG, progesterone, estrogen)."
+  },
+  {
+    question: "Which reproductive strategy produces many offspring with little parental investment?",
+    options: ["K-selection", "r-selection", "Biparental care", "Viviparity"],
+    correctIndex: 1,
+    explanation: "r-selected species produce many offspring with minimal parental care (e.g., most fish, insects, plants). This strategy relies on sheer numbers for some offspring to survive to reproductive age."
+  },
+  {
+    question: "Meiosis results in daughter cells that are:",
+    options: ["Diploid (2n) and genetically identical", "Haploid (n) and genetically diverse", "Diploid (2n) and genetically diverse", "Haploid (n) and genetically identical"],
+    correctIndex: 1,
+    explanation: "Meiosis produces four haploid (n) cells that are genetically diverse due to crossing over (prophase I) and independent assortment of homologous chromosomes (metaphase I)."
+  },
+  {
+    question: "In flowering plants, double fertilization involves:",
+    options: ["Two sperm fusing with one egg", "One sperm fusing with the egg and another with polar nuclei", "Two eggs being fertilized by one pollen tube", "Self-fertilization within the same flower"],
+    correctIndex: 1,
+    explanation: "Double fertilization: one sperm fertilizes the egg (forming zygote, 2n), while the other fuses with two polar nuclei (forming triploid endosperm, 3n) that nourishes the developing embryo."
+  },
+
 ];
