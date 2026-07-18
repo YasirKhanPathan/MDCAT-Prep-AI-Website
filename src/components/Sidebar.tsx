@@ -21,6 +21,7 @@ import {
   AlertTriangle,
   FlaskConical,
   BookOpenCheck,
+  Newspaper,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 
@@ -38,6 +39,7 @@ const navItems = [
   { href: "/lectures", label: "Lectures", icon: PlayCircle },
   { href: "/formulas", label: "Formula Sheet", icon: FlaskConical },
   { href: "/past-papers", label: "Past Papers", icon: ClipboardList },
+  { href: "/news", label: "MDCAT News", icon: Newspaper },
   { divider: true, label: "Review" },
   { href: "/wrong-answers", label: "Wrong Answers", icon: AlertTriangle },
   { href: "/progress", label: "Progress", icon: BarChart3 },
