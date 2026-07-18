@@ -23,34 +23,85 @@ let mediaRecorder: MediaRecorder | null = null;
 let audioChunks: Blob[] = [];
 let stream: MediaStream | null = null;
 let recordingStartTime = 0;
+let analyserNode: AnalyserNode | null = null;
+let audioContext: AudioContext | null = null;
+let animationFrameId: number | null = null;
+
+// Audio level callback
+let onAudioLevel: ((level: number) => void) | null = null;
+
+export function setAudioLevelCallback(callback: (level: number) => void): void {
+  onAudioLevel = callback;
+}
+
+export function clearAudioLevelCallback(): void {
+  onAudioLevel = null;
+}
+
+function updateAudioLevel(): void {
+  if (!analyserNode || !onAudioLevel) return;
+
+  const dataArray = new Uint8Array(analyserNode.frequencyBinCount);
+  analyserNode.getByteFrequencyData(dataArray);
+
+  // Calculate average volume
+  const average = dataArray.reduce((a, b) => a + b, 0) / dataArray.length;
+  const normalizedLevel = Math.min(average / 128, 1); // Normalize to 0-1
+
+  onAudioLevel(normalizedLevel);
+  animationFrameId = requestAnimationFrame(updateAudioLevel);
+}
 
 export async function startListening(
   language: Language,
   onResult: (transcript: string, isFinal: boolean) => void,
   onEnd: () => void,
-  onError: (error: string) => void
+  onError: (error: string) => void,
+  onAudioLevelCallback?: (level: number) => void
 ): Promise<void> {
   try {
-    // Request microphone access
+    // Set up audio level callback
+    if (onAudioLevelCallback) {
+      onAudioLevel = onAudioLevelCallback;
+    }
+
+    // Request microphone access with specific constraints for better quality
     stream = await navigator.mediaDevices.getUserMedia({
       audio: {
         echoCancellation: true,
         noiseSuppression: true,
         autoGainControl: true,
+        sampleRate: 16000, // Optimal for speech recognition
+        channelCount: 1,   // Mono for speech
       },
     });
+
+    // Set up audio analyzer for level visualization
+    audioContext = new AudioContext();
+    const source = audioContext.createMediaStreamSource(stream);
+    analyserNode = audioContext.createAnalyser();
+    analyserNode.fftSize = 256;
+    source.connect(analyserNode);
 
     audioChunks = [];
     recordingStartTime = Date.now();
 
-    // Determine supported MIME type
-    const mimeType = MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
-      ? "audio/webm;codecs=opus"
-      : MediaRecorder.isTypeSupported("audio/webm")
-      ? "audio/webm"
-      : "audio/mp4";
+    // Determine supported MIME type - prefer formats that Groq accepts
+    let mimeType = "audio/webm;codecs=opus";
+    if (!MediaRecorder.isTypeSupported(mimeType)) {
+      mimeType = "audio/webm";
+    }
+    if (!MediaRecorder.isTypeSupported(mimeType)) {
+      mimeType = "audio/mp4";
+    }
+    if (!MediaRecorder.isTypeSupported(mimeType)) {
+      mimeType = "audio/wav";
+    }
 
-    mediaRecorder = new MediaRecorder(stream, { mimeType });
+    mediaRecorder = new MediaRecorder(stream, {
+      mimeType,
+      audioBitsPerSecond: 128000, // Good quality for speech
+    });
 
     mediaRecorder.ondataavailable = (event) => {
       if (event.data.size > 0) {
@@ -61,22 +112,37 @@ export async function startListening(
     mediaRecorder.onstop = async () => {
       const recordingDuration = (Date.now() - recordingStartTime) / 1000;
 
+      // Stop audio level animation
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+      }
+      onAudioLevel = null;
+
       // Minimum recording length check
       if (recordingDuration < 0.5) {
-        onError("Recording too short. Please speak for at least 1 second.");
+        onError("Recording too short. Please hold the button while speaking.");
         cleanup();
         onEnd();
         return;
       }
 
       if (audioChunks.length === 0) {
-        onError("No audio data recorded. Please try again.");
+        onError("No audio data recorded. Please check your microphone.");
         cleanup();
         onEnd();
         return;
       }
 
       const audioBlob = new Blob(audioChunks, { type: mimeType });
+
+      // Check if audio blob is too small (likely silent)
+      if (audioBlob.size < 1000) {
+        onError("Recording appears to be silent. Please speak louder and try again.");
+        cleanup();
+        onEnd();
+        return;
+      }
 
       try {
         // Send to Groq Whisper API
@@ -100,7 +166,7 @@ export async function startListening(
         if (text && text.trim()) {
           onResult(text.trim(), true);
         } else {
-          onError("No speech was detected in the recording. Please speak clearly and try again.");
+          onError("No speech was detected. Please speak clearly and try again.");
         }
       } catch (error: any) {
         console.error("Transcription error:", error);
@@ -118,7 +184,12 @@ export async function startListening(
       onEnd();
     };
 
-    mediaRecorder.start(100); // Collect data every 100ms for responsiveness
+    // Start recording with timeslice for frequent data collection
+    mediaRecorder.start(200); // Collect data every 200ms
+
+    // Start audio level animation
+    updateAudioLevel();
+
   } catch (error: any) {
     console.error("Microphone access error:", error);
 
@@ -138,12 +209,34 @@ export async function startListening(
 }
 
 export function stopListening(): void {
+  // Stop audio level animation
+  if (animationFrameId) {
+    cancelAnimationFrame(animationFrameId);
+    animationFrameId = null;
+  }
+  onAudioLevel = null;
+
   if (mediaRecorder && mediaRecorder.state === "recording") {
     mediaRecorder.stop();
   }
 }
 
 function cleanup(): void {
+  // Stop audio level animation
+  if (animationFrameId) {
+    cancelAnimationFrame(animationFrameId);
+    animationFrameId = null;
+  }
+  onAudioLevel = null;
+
+  // Close audio context
+  if (audioContext) {
+    audioContext.close().catch(() => {});
+    audioContext = null;
+  }
+  analyserNode = null;
+
+  // Stop media stream
   if (stream) {
     stream.getTracks().forEach((track) => track.stop());
     stream = null;

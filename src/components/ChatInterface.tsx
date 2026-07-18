@@ -59,6 +59,7 @@ export default function ChatInterface() {
   const [isRecording, setIsRecording] = useState(false);
   const [sttSupported, setSttSupported] = useState(false);
   const [sttError, setSttError] = useState<string | null>(null);
+  const [audioLevel, setAudioLevel] = useState(0);
 
   // TTS state
   const [speakingMessageId, setSpeakingMessageId] = useState<number | null>(null);
@@ -169,6 +170,7 @@ export default function ChatInterface() {
     if (isRecording) {
       stopListening();
       setIsRecording(false);
+      setAudioLevel(0);
       return;
     }
 
@@ -189,10 +191,15 @@ export default function ChatInterface() {
       },
       () => {
         setIsRecording(false);
+        setAudioLevel(0);
       },
       (error) => {
         setSttError(error);
         setIsRecording(false);
+        setAudioLevel(0);
+      },
+      (level) => {
+        setAudioLevel(level);
       }
     );
   }, [isRecording, language]);
@@ -423,7 +430,19 @@ export default function ChatInterface() {
         {/* Voice status indicator */}
         {isRecording && (
           <div className="mt-2 flex items-center gap-2 text-xs text-red-500" role="status" aria-live="polite">
-            <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+            <div className="flex items-center gap-1">
+              {/* Audio level bars */}
+              {[0.2, 0.4, 0.6, 0.8, 1.0].map((threshold, i) => (
+                <div
+                  key={i}
+                  className={`w-1 rounded-full transition-all duration-100 ${
+                    audioLevel >= threshold
+                      ? "bg-red-500 h-4"
+                      : "bg-red-200 dark:bg-red-800 h-2"
+                  }`}
+                />
+              ))}
+            </div>
             <span>Listening... Speak now, then click the microphone when done</span>
           </div>
         )}
