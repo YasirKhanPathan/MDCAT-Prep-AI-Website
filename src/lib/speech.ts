@@ -35,6 +35,8 @@ const ttsLanguageCodes: Record<Language, string> = {
 
 // Speech Recognition (STT)
 let recognitionInstance: any = null;
+let currentCallbacks: { onEnd: () => void } | null = null;
+let instanceId = 0;
 
 export function startListening(
   language: Language,
@@ -48,8 +50,21 @@ export function startListening(
     return;
   }
 
-  // Stop any existing instance
-  stopListening();
+  // Abort any existing instance silently (don't call user's onEnd)
+  if (recognitionInstance) {
+    try {
+      recognitionInstance.onend = null;
+      recognitionInstance.onerror = null;
+      recognitionInstance.onresult = null;
+      recognitionInstance.abort();
+    } catch {
+      // Ignore errors during cleanup
+    }
+    recognitionInstance = null;
+    currentCallbacks = null;
+  }
+
+  const id = ++instanceId;
 
   const recognition = new SpeechRecognition();
   recognition.continuous = false;
@@ -57,6 +72,9 @@ export function startListening(
   recognition.lang = languageCodes[language] || "en-US";
 
   recognition.onresult = (event: any) => {
+    // Guard: only process events from current instance
+    if (id !== instanceId) return;
+
     let interimTranscript = "";
     let finalTranscript = "";
 
@@ -77,12 +95,25 @@ export function startListening(
   };
 
   recognition.onend = () => {
+    // Guard: only fire callback for current instance
+    if (id !== instanceId) return;
     recognitionInstance = null;
+    currentCallbacks = null;
     onEnd();
   };
 
   recognition.onerror = (event: any) => {
+    // Guard: only fire callback for current instance
+    if (id !== instanceId) return;
     recognitionInstance = null;
+    currentCallbacks = null;
+
+    // "aborted" is expected when we manually stop - don't treat as error
+    if (event.error === "aborted") {
+      onEnd();
+      return;
+    }
+
     if (event.error === "no-speech") {
       onError("No speech detected. Please try again.");
     } else if (event.error === "audio-capture") {
@@ -92,17 +123,33 @@ export function startListening(
     } else {
       onError(`Speech recognition error: ${event.error}`);
     }
-    onEnd();
   };
 
+  currentCallbacks = { onEnd };
   recognitionInstance = recognition;
-  recognition.start();
+
+  try {
+    recognition.start();
+  } catch (e) {
+    recognitionInstance = null;
+    currentCallbacks = null;
+    onError("Failed to start speech recognition. Please try again.");
+  }
 }
 
 export function stopListening(): void {
   if (recognitionInstance) {
-    recognitionInstance.abort();
+    // Detach handlers so abort doesn't fire user callbacks
+    try {
+      recognitionInstance.onend = null;
+      recognitionInstance.onerror = null;
+      recognitionInstance.onresult = null;
+      recognitionInstance.abort();
+    } catch {
+      // Ignore errors during cleanup
+    }
     recognitionInstance = null;
+    currentCallbacks = null;
   }
 }
 
