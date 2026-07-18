@@ -40,7 +40,9 @@ function getProgress(): StudentProgress {
   }
   const stored = localStorage.getItem("mdcat-progress");
   if (stored) {
-    return JSON.parse(stored);
+    const defaults = createEmptyProgress();
+    const parsed = JSON.parse(stored);
+    return { ...defaults, ...parsed };
   }
   return createEmptyProgress();
 }

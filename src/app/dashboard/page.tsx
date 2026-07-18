@@ -204,7 +204,7 @@ export default function DashboardPage() {
           </div>
           <div className="text-center p-4 bg-purple-50 dark:bg-purple-900/20 rounded-xl">
             <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
-              {progress?.wrongAnswers.length || 0}
+              {(progress?.wrongAnswers?.length ?? 0)}
             </p>
             <p className="text-sm text-gray-600 dark:text-gray-400">Wrong Answers to Review</p>
           </div>
