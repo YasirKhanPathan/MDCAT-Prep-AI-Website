@@ -165,7 +165,7 @@ export default function ChatInterface() {
   };
 
   // STT handlers
-  const handleToggleRecording = useCallback(() => {
+  const handleToggleRecording = useCallback(async () => {
     if (isRecording) {
       stopListening();
       setIsRecording(false);
@@ -173,8 +173,9 @@ export default function ChatInterface() {
     }
 
     setSttError(null);
+    setIsRecording(true);
 
-    startListening(
+    await startListening(
       language,
       (transcript, isFinal) => {
         if (isFinal) {
@@ -194,8 +195,6 @@ export default function ChatInterface() {
         setIsRecording(false);
       }
     );
-
-    setIsRecording(true);
   }, [isRecording, language]);
 
   // TTS handlers

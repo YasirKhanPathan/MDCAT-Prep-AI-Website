@@ -4,8 +4,7 @@ type Language = "en" | "ur" | "roman";
 // Feature detection
 export function isSpeechRecognitionSupported(): boolean {
   if (typeof window === "undefined") return false;
-  const w = window as any;
-  return !!(w.SpeechRecognition || w.webkitSpeechRecognition);
+  return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
 }
 
 export function isSpeechSynthesisSupported(): boolean {
@@ -13,208 +12,144 @@ export function isSpeechSynthesisSupported(): boolean {
   return !!window.speechSynthesis;
 }
 
-// Get SpeechRecognition constructor
-function getSpeechRecognitionConstructor(): (new () => any) | null {
-  if (typeof window === "undefined") return null;
-  const w = window as any;
-  return w.SpeechRecognition || w.webkitSpeechRecognition || null;
-}
-
-// Language to BCP 47 code mapping for recognition
-// Note: Web Speech API in Chrome uses Google's cloud recognition
-const recognitionLanguageCodes: Record<Language, string> = {
-  en: "en-US",
-  ur: "ur-PK",
-  roman: "en-US",
-};
-
 const ttsLanguageCodes: Record<Language, string> = {
   en: "en-US",
   ur: "ur-PK",
   roman: "en-US",
 };
 
-// Speech Recognition (STT)
-let recognitionInstance: any = null;
-let instanceId = 0;
-let recognitionTimer: ReturnType<typeof setTimeout> | null = null;
+// MediaRecorder state
+let mediaRecorder: MediaRecorder | null = null;
+let audioChunks: Blob[] = [];
+let stream: MediaStream | null = null;
+let recordingStartTime = 0;
 
-const MAX_RECORDING_TIME = 30000; // 30 seconds max
-
-export function startListening(
+export async function startListening(
   language: Language,
   onResult: (transcript: string, isFinal: boolean) => void,
   onEnd: () => void,
   onError: (error: string) => void
-): void {
-  const SpeechRecognition = getSpeechRecognitionConstructor();
-  if (!SpeechRecognition) {
-    onError(
-      "Speech recognition is not supported in this browser. Please use Chrome or Edge."
-    );
-    return;
-  }
-
-  // Abort any existing instance silently
-  if (recognitionInstance) {
-    try {
-      recognitionInstance.onend = null;
-      recognitionInstance.onerror = null;
-      recognitionInstance.onresult = null;
-      recognitionInstance.abort();
-    } catch {
-      // Ignore
-    }
-    recognitionInstance = null;
-  }
-
-  if (recognitionTimer) {
-    clearTimeout(recognitionTimer);
-    recognitionTimer = null;
-  }
-
-  const id = ++instanceId;
-  let hasReceivedResult = false;
-
-  const recognition = new SpeechRecognition();
-  recognition.continuous = true; // Allow continuous listening
-  recognition.interimResults = true;
-  recognition.maxAlternatives = 1;
-  recognition.lang = recognitionLanguageCodes[language] || "en-US";
-
-  recognition.onresult = (event: any) => {
-    if (id !== instanceId) return;
-
-    let interimTranscript = "";
-    let finalTranscript = "";
-
-    for (let i = event.resultIndex; i < event.results.length; i++) {
-      const result = event.results[i];
-      const transcript = result[0].transcript;
-
-      if (result.isFinal) {
-        finalTranscript += transcript;
-        hasReceivedResult = true;
-      } else {
-        interimTranscript += transcript;
-      }
-    }
-
-    if (finalTranscript) {
-      onResult(finalTranscript, true);
-    } else if (interimTranscript) {
-      onResult(interimTranscript, false);
-    }
-  };
-
-  recognition.onend = () => {
-    if (id !== instanceId) return;
-
-    if (recognitionTimer) {
-      clearTimeout(recognitionTimer);
-      recognitionTimer = null;
-    }
-
-    recognitionInstance = null;
-
-    // If we got no results at all, it's a problem
-    if (!hasReceivedResult) {
-      onError(
-        "No speech was detected. Make sure your microphone is working and try again."
-      );
-    }
-
-    onEnd();
-  };
-
-  recognition.onerror = (event: any) => {
-    if (id !== instanceId) return;
-
-    if (recognitionTimer) {
-      clearTimeout(recognitionTimer);
-      recognitionTimer = null;
-    }
-
-    recognitionInstance = null;
-
-    // "aborted" is expected when we manually stop
-    if (event.error === "aborted") {
-      onEnd();
-      return;
-    }
-
-    // "no-speech" means microphone is working but no voice detected
-    if (event.error === "no-speech") {
-      onError(
-        "No speech detected. Please speak clearly into your microphone and try again."
-      );
-      return;
-    }
-
-    if (event.error === "audio-capture") {
-      onError(
-        "No microphone found. Please connect a microphone and try again."
-      );
-      return;
-    }
-
-    if (event.error === "not-allowed") {
-      onError(
-        "Microphone access was denied. Please allow microphone access in your browser settings and reload the page."
-      );
-      return;
-    }
-
-    if (event.error === "network") {
-      onError(
-        "Network error during speech recognition. Please check your internet connection and try again."
-      );
-      return;
-    }
-
-    onError(`Speech recognition error: ${event.error}. Please try again.`);
-  };
-
-  recognitionInstance = recognition;
-
+): Promise<void> {
   try {
-    recognition.start();
-  } catch (e: any) {
-    recognitionInstance = null;
-    onError(
-      `Failed to start speech recognition: ${e.message || "Unknown error"}. Please try again.`
-    );
-  }
+    // Request microphone access
+    stream = await navigator.mediaDevices.getUserMedia({
+      audio: {
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: true,
+      },
+    });
 
-  // Auto-stop after max time to prevent infinite recording
-  recognitionTimer = setTimeout(() => {
-    if (id === instanceId && recognitionInstance) {
-      try {
-        recognitionInstance.stop();
-      } catch {
-        // Ignore
+    audioChunks = [];
+    recordingStartTime = Date.now();
+
+    // Determine supported MIME type
+    const mimeType = MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
+      ? "audio/webm;codecs=opus"
+      : MediaRecorder.isTypeSupported("audio/webm")
+      ? "audio/webm"
+      : "audio/mp4";
+
+    mediaRecorder = new MediaRecorder(stream, { mimeType });
+
+    mediaRecorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        audioChunks.push(event.data);
       }
+    };
+
+    mediaRecorder.onstop = async () => {
+      const recordingDuration = (Date.now() - recordingStartTime) / 1000;
+
+      // Minimum recording length check
+      if (recordingDuration < 0.5) {
+        onError("Recording too short. Please speak for at least 1 second.");
+        cleanup();
+        onEnd();
+        return;
+      }
+
+      if (audioChunks.length === 0) {
+        onError("No audio data recorded. Please try again.");
+        cleanup();
+        onEnd();
+        return;
+      }
+
+      const audioBlob = new Blob(audioChunks, { type: mimeType });
+
+      try {
+        // Send to Groq Whisper API
+        const formData = new FormData();
+        formData.append("audio", audioBlob, "recording.webm");
+        formData.append("language", language);
+
+        const response = await fetch("/api/transcribe", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.error || "Transcription failed");
+        }
+
+        const data = await response.json();
+        const text = data.text;
+
+        if (text && text.trim()) {
+          onResult(text.trim(), true);
+        } else {
+          onError("No speech was detected in the recording. Please speak clearly and try again.");
+        }
+      } catch (error: any) {
+        console.error("Transcription error:", error);
+        onError(`Transcription failed: ${error.message || "Please try again"}`);
+      } finally {
+        cleanup();
+        onEnd();
+      }
+    };
+
+    mediaRecorder.onerror = (event) => {
+      console.error("MediaRecorder error:", event);
+      onError("Recording failed. Please check your microphone and try again.");
+      cleanup();
+      onEnd();
+    };
+
+    mediaRecorder.start(100); // Collect data every 100ms for responsiveness
+  } catch (error: any) {
+    console.error("Microphone access error:", error);
+
+    if (error.name === "NotAllowedError") {
+      onError("Microphone access denied. Please allow microphone access in your browser settings and reload the page.");
+    } else if (error.name === "NotFoundError") {
+      onError("No microphone found. Please connect a microphone and try again.");
+    } else if (error.name === "NotReadableError") {
+      onError("Microphone is being used by another application. Please close other apps using the microphone.");
+    } else {
+      onError(`Could not access microphone: ${error.message || "Unknown error"}`);
     }
-  }, MAX_RECORDING_TIME);
+
+    cleanup();
+    onEnd();
+  }
 }
 
 export function stopListening(): void {
-  if (recognitionTimer) {
-    clearTimeout(recognitionTimer);
-    recognitionTimer = null;
+  if (mediaRecorder && mediaRecorder.state === "recording") {
+    mediaRecorder.stop();
   }
+}
 
-  if (recognitionInstance) {
-    try {
-      recognitionInstance.onend = null;
-      recognitionInstance.onerror = null;
-      recognitionInstance.onresult = null;
-      recognitionInstance.stop();
-    } catch {
-      // Ignore
-    }
-    recognitionInstance = null;
+function cleanup(): void {
+  if (stream) {
+    stream.getTracks().forEach((track) => track.stop());
+    stream = null;
   }
+  mediaRecorder = null;
+  audioChunks = [];
 }
 
 // Text-to-Speech (TTS)
