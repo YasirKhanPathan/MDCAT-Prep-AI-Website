@@ -41,11 +41,21 @@ export async function generateMCQs(
   count: number = 10,
   difficulty: string = "medium"
 ) {
+  const difficultyInstructions: Record<string, string> = {
+    easy: "Generate EASY questions suitable for beginners. Focus on basic definitions, simple recall, and fundamental concepts. Questions should test knowledge of facts and straightforward concepts.",
+    medium: "Generate MEDIUM difficulty questions. Include application-based problems, require understanding of relationships between concepts, and test ability to analyze rather than just recall.",
+    hard: "Generate HARD questions suitable for MDCAT exam preparation. Include complex multi-step problems, require deep conceptual understanding, combine multiple topics, and test analytical and application skills. Questions should be challenging and exam-level.",
+    mixed: "Generate a MIX of easy (30%), medium (40%), and hard (30%) questions appropriate for comprehensive MDCAT preparation.",
+  };
+
   const prompt = `Generate ${count} MDCAT-style multiple choice questions for the following topic:
 Subject: ${subject}
 Topic: ${topic}
 Subtopic: ${subtopic}
-Difficulty: ${difficulty}
+Difficulty: ${difficulty.toUpperCase()}
+
+Difficulty Requirements:
+${difficultyInstructions[difficulty] || difficultyInstructions.medium}
 
 Return ONLY a valid JSON array with this exact format:
 [
@@ -62,7 +72,7 @@ Requirements:
 - Each question must have exactly 4 options
 - correctIndex is 0-indexed (0=A, 1=B, 2=C, 3=D)
 - Explanations should be educational and detailed
-- Mix of easy, medium, and hard questions appropriate for MDCAT
+- All questions MUST match the specified difficulty level exactly
 - Do NOT include any text before or after the JSON array`;
 
   const response = await groq.chat.completions.create({

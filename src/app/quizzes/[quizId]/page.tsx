@@ -65,6 +65,18 @@ export default function QuizDetailPage() {
     setPhase("generating");
 
     try {
+      // Use static questions if available
+      if (quiz.staticQuestions && quiz.staticQuestions.length > 0) {
+        const shuffled = [...quiz.staticQuestions].sort(() => Math.random() - 0.5);
+        setQuestions(shuffled);
+        setAnswers(Array.from({ length: shuffled.length }));
+        setShowExplanations(new Array(shuffled.length).fill(false));
+        setTimeLeft(quiz.timeLimit * 60);
+        setPhase("quiz");
+        return;
+      }
+
+      // Fall back to AI generation
       const res = await fetch("/api/generate-questions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -241,8 +253,15 @@ export default function QuizDetailPage() {
     return (
       <div className="p-6 max-w-3xl mx-auto text-center py-20">
         <div className="animate-spin h-12 w-12 border-4 border-emerald-500 border-t-transparent rounded-full mx-auto mb-4" />
-        <h2 className="text-xl font-semibold mb-2">Generating Questions...</h2>
-        <p className="text-gray-500">Creating {quiz.questionCount} {quiz.difficulty} questions</p>
+        <h2 className="text-xl font-semibold mb-2">
+          {quiz.staticQuestions && quiz.staticQuestions.length > 0 ? "Loading Questions..." : "Generating Questions..."}
+        </h2>
+        <p className="text-gray-500">
+          {quiz.staticQuestions && quiz.staticQuestions.length > 0
+            ? `Preparing ${quiz.staticQuestions.length} pre-authored questions`
+            : `Creating ${quiz.questionCount} ${quiz.difficulty} questions`
+          }
+        </p>
       </div>
     );
   }
@@ -259,7 +278,13 @@ export default function QuizDetailPage() {
 
       <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-8">
         <h1 className="text-2xl font-bold mb-2">{quiz.title}</h1>
-        <p className="text-gray-600 dark:text-gray-400 mb-6">{quiz.description}</p>
+        <p className="text-gray-600 dark:text-gray-400 mb-4">{quiz.description}</p>
+        {quiz.staticQuestions && quiz.staticQuestions.length > 0 && (
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 text-xs font-medium mb-6">
+            <CheckCircle2 className="h-3 w-3" />
+            Pre-authored MCQs — Exam-ready difficulty
+          </div>
+        )}
 
         <div className="grid grid-cols-3 gap-4 mb-8">
           <div className="text-center p-4 rounded-xl bg-gray-50 dark:bg-gray-800">
