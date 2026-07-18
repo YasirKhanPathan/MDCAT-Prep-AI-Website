@@ -902,10 +902,15 @@ const kpkMDCAT2024: PastPaper = {
 };
 
 import { numsMDCAT2024 } from "./past-papers/nums-2024";
+import { numsMDCAT2023 } from "./past-papers/nums-2023";
 import { punjabMDCAT2023 } from "./past-papers/punjab-2023";
+import { punjabMDCAT2022 } from "./past-papers/punjab-2022";
 import { sindhMDCAT2023 } from "./past-papers/sindh-2023";
+import { sindhMDCAT2022 } from "./past-papers/sindh-2022";
 import { kpkMDCAT2023 } from "./past-papers/kpk-2023";
+import { kpkMDCAT2022 } from "./past-papers/kpk-2022";
 import { federalMDCAT2024 } from "./past-papers/federal-2024";
+import { federalMDCAT2023 } from "./past-papers/federal-2023";
 
 // Export all past papers
 export const pastPapers: PastPaper[] = [
@@ -914,9 +919,14 @@ export const pastPapers: PastPaper[] = [
   kpkMDCAT2024,
   numsMDCAT2024,
   federalMDCAT2024,
-  punjabMDCAT2023,
   sindhMDCAT2023,
+  punjabMDCAT2023,
   kpkMDCAT2023,
+  numsMDCAT2023,
+  federalMDCAT2023,
+  punjabMDCAT2022,
+  sindhMDCAT2022,
+  kpkMDCAT2022,
 ];
 
 // Helper function to get past paper by ID

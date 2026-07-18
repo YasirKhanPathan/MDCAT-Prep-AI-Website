@@ -1,0 +1,51 @@
+import { PastPaperQuestion } from "@/data/pastPapers";
+
+export const nums2023Biology: PastPaperQuestion[] = [
+  { id: "n23b1", question: "The process of chemiosmosis occurs in:", options: ["Cytoplasm", "Mitochondrial matrix", "Inner mitochondrial membrane", "Nucleus"], correctIndex: 2, explanation: "Chemiosmosis occurs across the inner mitochondrial membrane where the proton gradient drives ATP synthase.", subject: "Biology", topic: "Cell Biology" },
+  { id: "n23b2", question: "Which type of RNA carries amino acids to the ribosome?", options: ["mRNA", "tRNA", "rRNA", "snRNA"], correctIndex: 1, explanation: "Transfer RNA (tRNA) carries specific amino acids to the ribosome during translation.", subject: "Biology", topic: "Molecular Biology" },
+  { id: "n23b3", question: "A cross between AaBb and aabb is called:", options: ["Monohybrid cross", "Dihybrid cross", "Test cross", "Back cross"], correctIndex: 2, explanation: "Crossing a heterozygote (AaBb) with a homozygous recessive (aabb) is a test cross used to determine genotypes.", subject: "Biology", topic: "Genetics" },
+  { id: "n23b4", question: "The pacemaker of the heart is:", options: ["SA node", "AV node", "Bundle of His", "Purkinje fibers"], correctIndex: 0, explanation: "The sinoatrial (SA) node generates the electrical impulse that initiates each heartbeat.", subject: "Biology", topic: "Human Physiology" },
+  { id: "n23b5", question: "Which of the following is a second messenger in cell signaling?", options: ["Insulin", "cAMP", "Glucose", "Hemoglobin"], correctIndex: 1, explanation: "Cyclic AMP (cAMP) is a second messenger that relays signals from cell surface receptors to intracellular targets.", subject: "Biology", topic: "Cell Biology" },
+  { id: "n23b6", question: "The bottleneck effect is an example of:", options: ["Natural selection", "Genetic drift", "Mutation", "Gene flow"], correctIndex: 1, explanation: "The bottleneck effect occurs when a population is drastically reduced, causing random changes in allele frequencies.", subject: "Biology", topic: "Evolution" },
+  { id: "n23b7", question: "Which enzyme unwinds the DNA double helix?", options: ["DNA polymerase", "Topoisomerase", "Helicase", "Ligase"], correctIndex: 2, explanation: "Helicase breaks hydrogen bonds between base pairs to unwind the double helix during replication.", subject: "Biology", topic: "Molecular Biology" },
+  { id: "n23b8", question: "The function of the loop of Henle is to:", options: ["Filter blood", "Concentrate urine", "Absorb glucose", "Produce hormones"], correctIndex: 1, explanation: "The loop of Henle creates a concentration gradient in the renal medulla, enabling water reabsorption and urine concentration.", subject: "Biology", topic: "Human Physiology" },
+  { id: "n23b9", question: "Which of the following is an obligate anaerobe?", options: ["E. coli", "Clostridium", "Mycobacterium", "Staphylococcus"], correctIndex: 1, explanation: "Clostridium species are obligate anaerobes that cannot survive in the presence of oxygen.", subject: "Biology", topic: "Cell Biology" },
+  { id: "n23b10", question: "The hardy-Weinberg principle applies to:", options: ["Evolving populations", "Non-evolving populations", "Extinct species", "Mutant cells"], correctIndex: 1, explanation: "Hardy-Weinberg equilibrium describes a non-evolving population where allele frequencies remain constant.", subject: "Biology", topic: "Evolution" },
+];
+
+export const nums2023Chemistry: PastPaperQuestion[] = [
+  { id: "n23c1", question: "The shape of SF₆ is:", options: ["Octahedral", "Square planar", "Trigonal bipyramidal", "Tetrahedral"], correctIndex: 0, explanation: "SF₆ has 6 bonding pairs and 0 lone pairs, giving an octahedral geometry.", subject: "Chemistry", topic: "Chemical Bonding" },
+  { id: "n23c2", question: "Which of the following is a Lewis base?", options: ["BF₃", "AlCl₃", "NH₃", "H⁺"], correctIndex: 2, explanation: "NH₃ is a Lewis base because it has a lone pair of electrons that can be donated.", subject: "Chemistry", topic: "Chemical Bonding" },
+  { id: "n23c3", question: "The number of atoms in 1 mole of water is:", options: ["6.022 × 10²³", "1.204 × 10²⁴", "3 × 6.022 × 10²³", "2 × 6.022 × 10²³"], correctIndex: 2, explanation: "1 mole of H₂O contains 3 atoms (2H + 1O) per molecule × 6.022 × 10²³ molecules = 3 × 6.022 × 10²³ atoms.", subject: "Chemistry", topic: "Stoichiometry" },
+  { id: "n23c4", question: "The electrode potential of a standard hydrogen electrode is:", options: ["1.0 V", "0.5 V", "0 V", "-1.0 V"], correctIndex: 2, explanation: "The standard hydrogen electrode (SHE) is defined as having a potential of exactly 0 V.", subject: "Chemistry", topic: "Electrochemistry" },
+  { id: "n23c5", question: "Which of the following has the highest melting point?", options: ["NaCl", "MgO", "Al₂O₃", "CaO"], correctIndex: 1, explanation: "MgO has the highest melting point (2852°C) due to high ionic charge (+2/-2) and small ion sizes.", subject: "Chemistry", topic: "Chemical Bonding" },
+  { id: "n23c6", question: "The rate of a first-order reaction depends on:", options: ["Concentration squared", "Concentration", "Temperature only", "Does not depend on concentration"], correctIndex: 3, explanation: "For a first-order reaction, rate = k[A]. The rate constant k is independent of concentration (though it depends on temperature).", subject: "Chemistry", topic: "Chemical Kinetics" },
+  { id: "n23c7", question: "Which of the following is a reducing agent?", options: ["KMnO₄", "H₂O₂", "NaBH₄", "Cl₂"], correctIndex: 2, explanation: "NaBH₄ (sodium borohydride) is a reducing agent that donates hydride ions (H⁻).", subject: "Chemistry", topic: "Redox Reactions" },
+  { id: "n23c8", question: "The conjugate base of H₂SO₄ is:", options: ["HSO₄⁻", "SO₄²⁻", "H₃O⁺", "OH⁻"], correctIndex: 0, explanation: "When H₂SO₄ donates one proton, it forms its conjugate base HSO₄⁻ (hydrogen sulfate).", subject: "Chemistry", topic: "Acids, Bases and Salts" },
+  { id: "n23c9", question: "Which of the following is an aromatic compound?", options: ["Cyclohexane", "Benzene", "Cyclopentene", "Hexane"], correctIndex: 1, explanation: "Benzene is aromatic because it has a cyclic, planar structure with 6 π electrons (4n+2 rule, n=1).", subject: "Chemistry", topic: "Organic Chemistry" },
+  { id: "n23c10", question: "The oxidation state of Mn in KMnO₄ is:", options: ["+5", "+6", "+7", "+8"], correctIndex: 2, explanation: "KMnO₄: K(+1) + Mn(x) + 4O(-2) = 0 → 1 + x - 8 = 0 → x = +7.", subject: "Chemistry", topic: "Redox Reactions" },
+];
+
+export const nums2023Physics: PastPaperQuestion[] = [
+  { id: "n23p1", question: "The moment of inertia of a disc about its central axis is:", options: ["MR²", "½MR²", "⅖MR²", "⅔MR²"], correctIndex: 1, explanation: "For a solid disc/cylinder: I = ½MR². For a solid sphere: I = ⅖MR².", subject: "Physics", topic: "Turning Effects of Forces" },
+  { id: "n23p2", question: "The terminal velocity of a falling body is reached when:", options: ["Acceleration is maximum", "Gravity equals air resistance", "Velocity is zero", "Weight equals buoyancy"], correctIndex: 1, explanation: "Terminal velocity occurs when drag force equals gravitational force, so net force = 0 and acceleration = 0.", subject: "Physics", topic: "Forces and Motion" },
+  { id: "n23p3", question: "In a series LC circuit at resonance, the impedance is:", options: ["Maximum", "Minimum (zero)", "Equal to R", "Infinite"], correctIndex: 1, explanation: "At resonance in a series LC circuit, X_L = X_C so they cancel, leaving minimum impedance Z = R.", subject: "Physics", topic: "Waves" },
+  { id: "n23p4", question: "The work function of a metal is the:", options: ["Maximum kinetic energy of ejected electrons", "Minimum energy required to eject an electron", "Total energy of the metal", "Energy of incident photon"], correctIndex: 1, explanation: "Work function (φ) is the minimum energy needed to remove an electron from the metal surface.", subject: "Physics", topic: "Modern Physics" },
+  { id: "n23p5", question: "Which of the following has the lowest ionization energy?", options: ["Li", "Na", "K", "Cs"], correctIndex: 3, explanation: "Ionization energy decreases down a group. Cs (cesium) has the lowest IE due to largest atomic radius.", subject: "Physics", topic: "Modern Physics" },
+  { id: "n23p6", question: "The time constant of an RC circuit is:", options: ["RC", "R/C", "1/RC", "R²C"], correctIndex: 0, explanation: "Time constant τ = RC (resistance × capacitance). It determines how quickly the capacitor charges/discharges.", subject: "Physics", topic: "Electricity" },
+  { id: "n23p7", question: "A particle performing SHM has maximum kinetic energy at:", options: ["Extreme position", "Mean position", "Halfway between mean and extreme", "At any point"], correctIndex: 1, explanation: "KE is maximum at the mean position where velocity is maximum. PE is maximum at extreme positions.", subject: "Physics", topic: "Waves" },
+  { id: "n23p8", question: "The specific charge of an electron is:", options: ["1.6 × 10⁻¹⁹ C", "9.1 × 10⁻³¹ kg", "1.76 × 10¹¹ C/kg", "8.85 × 10⁻¹² F/m"], correctIndex: 2, explanation: "Specific charge = charge/mass = e/mₑ = 1.6 × 10⁻¹⁹ / 9.1 × 10⁻³¹ = 1.76 × 10¹¹ C/kg.", subject: "Physics", topic: "Electricity" },
+  { id: "n23p9", question: "The critical angle for glass-air interface is approximately:", options: ["15°", "25°", "42°", "60°"], correctIndex: 2, explanation: "Critical angle θc = sin⁻¹(1/n) = sin⁻¹(1/1.5) ≈ 41.8° ≈ 42° for glass.", subject: "Physics", topic: "Light" },
+  { id: "n23p10", question: "The binding energy per nucleon is maximum for:", options: ["Hydrogen", "Iron-56", "Uranium-235", "Carbon-12"], correctIndex: 1, explanation: "Iron-56 has the highest binding energy per nucleon (~8.8 MeV), making it the most stable nucleus.", subject: "Physics", topic: "Nuclear Physics" },
+];
+
+export const numsMDCAT2023 = {
+  id: "nums-mdcat-2023",
+  title: "NUMS MDCAT 2023",
+  year: 2023,
+  province: "NUMS (National)",
+  totalQuestions: 30,
+  timeLimit: 45,
+  description: "Past paper from National University of Medical Sciences MDCAT 2023. Biology, Chemistry, and Physics sections.",
+  questions: [...nums2023Biology, ...nums2023Chemistry, ...nums2023Physics]
+};
