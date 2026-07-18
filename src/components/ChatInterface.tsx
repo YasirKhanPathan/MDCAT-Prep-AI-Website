@@ -425,7 +425,12 @@ export default function ChatInterface() {
         {isRecording && (
           <div className="mt-2 flex items-center gap-2 text-xs text-red-500" role="status" aria-live="polite">
             <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-            <span>Recording... Click the microphone to stop</span>
+            <span>Listening... Speak now, then click the microphone when done</span>
+          </div>
+        )}
+        {sttError && (
+          <div className="mt-2 text-xs text-amber-600 dark:text-amber-400">
+            Tip: Speech recognition works best in Chrome or Edge browser
           </div>
         )}
       </div>

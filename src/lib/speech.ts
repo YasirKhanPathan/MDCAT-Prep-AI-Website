@@ -20,10 +20,11 @@ function getSpeechRecognitionConstructor(): (new () => any) | null {
   return w.SpeechRecognition || w.webkitSpeechRecognition || null;
 }
 
-// Language to BCP 47 code mapping
-const languageCodes: Record<Language, string> = {
+// Language to BCP 47 code mapping for recognition
+// Note: Web Speech API in Chrome uses Google's cloud recognition
+const recognitionLanguageCodes: Record<Language, string> = {
   en: "en-US",
-  ur: "en-US",
+  ur: "ur-PK",
   roman: "en-US",
 };
 
@@ -35,8 +36,10 @@ const ttsLanguageCodes: Record<Language, string> = {
 
 // Speech Recognition (STT)
 let recognitionInstance: any = null;
-let currentCallbacks: { onEnd: () => void } | null = null;
 let instanceId = 0;
+let recognitionTimer: ReturnType<typeof setTimeout> | null = null;
+
+const MAX_RECORDING_TIME = 30000; // 30 seconds max
 
 export function startListening(
   language: Language,
@@ -46,11 +49,13 @@ export function startListening(
 ): void {
   const SpeechRecognition = getSpeechRecognitionConstructor();
   if (!SpeechRecognition) {
-    onError("Speech recognition is not supported in this browser.");
+    onError(
+      "Speech recognition is not supported in this browser. Please use Chrome or Edge."
+    );
     return;
   }
 
-  // Abort any existing instance silently (don't call user's onEnd)
+  // Abort any existing instance silently
   if (recognitionInstance) {
     try {
       recognitionInstance.onend = null;
@@ -58,30 +63,38 @@ export function startListening(
       recognitionInstance.onresult = null;
       recognitionInstance.abort();
     } catch {
-      // Ignore errors during cleanup
+      // Ignore
     }
     recognitionInstance = null;
-    currentCallbacks = null;
+  }
+
+  if (recognitionTimer) {
+    clearTimeout(recognitionTimer);
+    recognitionTimer = null;
   }
 
   const id = ++instanceId;
+  let hasReceivedResult = false;
 
   const recognition = new SpeechRecognition();
-  recognition.continuous = false;
+  recognition.continuous = true; // Allow continuous listening
   recognition.interimResults = true;
-  recognition.lang = languageCodes[language] || "en-US";
+  recognition.maxAlternatives = 1;
+  recognition.lang = recognitionLanguageCodes[language] || "en-US";
 
   recognition.onresult = (event: any) => {
-    // Guard: only process events from current instance
     if (id !== instanceId) return;
 
     let interimTranscript = "";
     let finalTranscript = "";
 
     for (let i = event.resultIndex; i < event.results.length; i++) {
-      const transcript = event.results[i][0].transcript;
-      if (event.results[i].isFinal) {
+      const result = event.results[i];
+      const transcript = result[0].transcript;
+
+      if (result.isFinal) {
         finalTranscript += transcript;
+        hasReceivedResult = true;
       } else {
         interimTranscript += transcript;
       }
@@ -95,61 +108,112 @@ export function startListening(
   };
 
   recognition.onend = () => {
-    // Guard: only fire callback for current instance
     if (id !== instanceId) return;
+
+    if (recognitionTimer) {
+      clearTimeout(recognitionTimer);
+      recognitionTimer = null;
+    }
+
     recognitionInstance = null;
-    currentCallbacks = null;
+
+    // If we got no results at all, it's a problem
+    if (!hasReceivedResult) {
+      onError(
+        "No speech was detected. Make sure your microphone is working and try again."
+      );
+    }
+
     onEnd();
   };
 
   recognition.onerror = (event: any) => {
-    // Guard: only fire callback for current instance
     if (id !== instanceId) return;
-    recognitionInstance = null;
-    currentCallbacks = null;
 
-    // "aborted" is expected when we manually stop - don't treat as error
+    if (recognitionTimer) {
+      clearTimeout(recognitionTimer);
+      recognitionTimer = null;
+    }
+
+    recognitionInstance = null;
+
+    // "aborted" is expected when we manually stop
     if (event.error === "aborted") {
       onEnd();
       return;
     }
 
+    // "no-speech" means microphone is working but no voice detected
     if (event.error === "no-speech") {
-      onError("No speech detected. Please try again.");
-    } else if (event.error === "audio-capture") {
-      onError("Microphone not found. Please check your device.");
-    } else if (event.error === "not-allowed") {
-      onError("Microphone access denied. Please allow microphone access in your browser settings.");
-    } else {
-      onError(`Speech recognition error: ${event.error}`);
+      onError(
+        "No speech detected. Please speak clearly into your microphone and try again."
+      );
+      return;
     }
+
+    if (event.error === "audio-capture") {
+      onError(
+        "No microphone found. Please connect a microphone and try again."
+      );
+      return;
+    }
+
+    if (event.error === "not-allowed") {
+      onError(
+        "Microphone access was denied. Please allow microphone access in your browser settings and reload the page."
+      );
+      return;
+    }
+
+    if (event.error === "network") {
+      onError(
+        "Network error during speech recognition. Please check your internet connection and try again."
+      );
+      return;
+    }
+
+    onError(`Speech recognition error: ${event.error}. Please try again.`);
   };
 
-  currentCallbacks = { onEnd };
   recognitionInstance = recognition;
 
   try {
     recognition.start();
-  } catch (e) {
+  } catch (e: any) {
     recognitionInstance = null;
-    currentCallbacks = null;
-    onError("Failed to start speech recognition. Please try again.");
+    onError(
+      `Failed to start speech recognition: ${e.message || "Unknown error"}. Please try again.`
+    );
   }
+
+  // Auto-stop after max time to prevent infinite recording
+  recognitionTimer = setTimeout(() => {
+    if (id === instanceId && recognitionInstance) {
+      try {
+        recognitionInstance.stop();
+      } catch {
+        // Ignore
+      }
+    }
+  }, MAX_RECORDING_TIME);
 }
 
 export function stopListening(): void {
+  if (recognitionTimer) {
+    clearTimeout(recognitionTimer);
+    recognitionTimer = null;
+  }
+
   if (recognitionInstance) {
-    // Detach handlers so abort doesn't fire user callbacks
     try {
       recognitionInstance.onend = null;
       recognitionInstance.onerror = null;
       recognitionInstance.onresult = null;
-      recognitionInstance.abort();
+      recognitionInstance.stop();
     } catch {
-      // Ignore errors during cleanup
+      // Ignore
     }
     recognitionInstance = null;
-    currentCallbacks = null;
   }
 }
 
@@ -162,12 +226,15 @@ function getVoiceForLanguage(language: Language): SpeechSynthesisVoice | null {
   const targetLang = ttsLanguageCodes[language] || "en-US";
   const voices = window.speechSynthesis.getVoices();
 
+  if (voices.length === 0) return null;
+
   // Try exact match first
   const exact = voices.find((v) => v.lang === targetLang);
   if (exact) return exact;
 
   // Try partial match (e.g., "ur" matches "ur-PK")
-  const partial = voices.find((v) => v.lang.startsWith(targetLang.split("-")[0]));
+  const baseLang = targetLang.split("-")[0];
+  const partial = voices.find((v) => v.lang.startsWith(baseLang));
   if (partial) return partial;
 
   // Fallback to any English voice
