@@ -7,10 +7,10 @@ export async function POST(request: NextRequest) {
   try {
     const { subject, topic, subtopic, count, difficulty } = await request.json();
 
-    const API_KEY = process.env.NEXT_PUBLIC_GROQ_API_KEY;
+    const API_KEY = process.env.GROQ_API_KEY;
     if (!API_KEY) {
       return Response.json(
-        { error: "Groq API key not configured" },
+        { error: "Groq API key not configured. Please set GROQ_API_KEY in .env.local" },
         { status: 500 }
       );
     }
@@ -26,8 +26,9 @@ export async function POST(request: NextRequest) {
     return Response.json({ questions });
   } catch (error) {
     console.error("Question generation error:", error);
+    const msg = error instanceof Error ? error.message : "Unknown error";
     return Response.json(
-      { error: "Failed to generate questions" },
+      { error: `Failed to generate questions: ${msg}` },
       { status: 500 }
     );
   }

@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
       level: string;
     };
 
-    const API_KEY = process.env.NEXT_PUBLIC_GROQ_API_KEY;
+    const API_KEY = process.env.GROQ_API_KEY;
     if (!API_KEY) {
       return Response.json({ error: "API key not configured" }, { status: 500 });
     }
@@ -84,7 +84,7 @@ Return ONLY a JSON array:
     const text = response.choices[0]?.message?.content || "[]";
 
     try {
-      const jsonMatch = text.match(/\[[\s\S]*\]/);
+      const jsonMatch = text.match(/\[[\s\S]*?\]/);
       if (jsonMatch) {
         return Response.json({ tasks: JSON.parse(jsonMatch[0]) });
       }

@@ -1,6 +1,6 @@
 import OpenAI from "openai";
 
-const API_KEY = process.env.NEXT_PUBLIC_GROQ_API_KEY || "";
+const API_KEY = process.env.GROQ_API_KEY || "";
 
 export const groq = new OpenAI({
   apiKey: API_KEY,
@@ -32,6 +32,41 @@ export async function generateChatResponse(
   });
 
   return response.choices[0]?.message?.content || "No response generated.";
+}
+
+function parseJSONFromText<T>(text: string): T | null {
+  try {
+    return JSON.parse(text);
+  } catch {
+    // Try to extract JSON array
+    const arrayMatch = text.match(/\[[\s\S]*?\]/);
+    if (arrayMatch) {
+      try {
+        return JSON.parse(arrayMatch[0]);
+      } catch {
+        // Try to extract JSON object
+        const objectMatch = text.match(/\{[\s\S]*?\}/);
+        if (objectMatch) {
+          try {
+            return JSON.parse(objectMatch[0]);
+          } catch {
+            return null;
+          }
+        }
+        return null;
+      }
+    }
+    // Try to extract JSON object
+    const objectMatch = text.match(/\{[\s\S]*?\}/);
+    if (objectMatch) {
+      try {
+        return JSON.parse(objectMatch[0]);
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  }
 }
 
 export async function generateMCQs(
@@ -75,23 +110,48 @@ Requirements:
 - All questions MUST match the specified difficulty level exactly
 - Do NOT include any text before or after the JSON array`;
 
-  const response = await groq.chat.completions.create({
-    model: MODEL,
-    messages: [{ role: "user", content: prompt }],
-    temperature: 0.7,
-    max_tokens: 4096,
-    top_p: 0.9,
-  });
+  // Retry up to 2 times on parse failure
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const response = await groq.chat.completions.create({
+      model: MODEL,
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0.5 + attempt * 0.1, // Slightly lower temp on retry for more deterministic output
+      max_tokens: 4096,
+      top_p: 0.9,
+    });
 
-  const text = response.choices[0]?.message?.content || "";
+    const text = response.choices[0]?.message?.content || "";
 
-  try {
-    const jsonMatch = text.match(/\[[\s\S]*\]/);
-    if (jsonMatch) {
-      return JSON.parse(jsonMatch[0]);
+    const parsed = parseJSONFromText<Array<{
+      question: string;
+      options: string[];
+      correctIndex: number;
+      explanation: string;
+    }>>(text);
+
+    if (parsed && Array.isArray(parsed) && parsed.length > 0) {
+      // Validate each question has the right shape
+      const valid = parsed.every(
+        (q) =>
+          q.question &&
+          Array.isArray(q.options) &&
+          q.options.length === 4 &&
+          typeof q.correctIndex === "number" &&
+          q.explanation
+      );
+      if (valid) {
+        return parsed.slice(0, count);
+      }
     }
-    return JSON.parse(text);
-  } catch {
-    throw new Error("Failed to parse generated questions");
+
+    // On last attempt, throw with details
+    if (attempt === 2) {
+      console.error("MCQ parse failed after 3 attempts. Raw response:", text.substring(0, 500));
+      throw new Error(
+        `Failed to parse AI-generated questions. The AI model returned an invalid format. Please try again or use a different topic.`
+      );
+    }
   }
+
+  throw new Error("Failed to generate questions");
 }

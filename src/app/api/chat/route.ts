@@ -8,10 +8,10 @@ export async function POST(request: NextRequest) {
   try {
     const { message, subject, history, language, level } = await request.json();
 
-    const API_KEY = process.env.NEXT_PUBLIC_GROQ_API_KEY;
+    const API_KEY = process.env.GROQ_API_KEY;
     if (!API_KEY) {
       return Response.json(
-        { error: "Groq API key not configured" },
+        { error: "Groq API key not configured. Please set GROQ_API_KEY in .env.local" },
         { status: 500 }
       );
     }
@@ -38,8 +38,9 @@ export async function POST(request: NextRequest) {
     return Response.json({ response: text });
   } catch (error) {
     console.error("Chat API error:", error);
+    const msg = error instanceof Error ? error.message : "Unknown error";
     return Response.json(
-      { error: "Failed to generate response" },
+      { error: `Failed to generate response: ${msg}` },
       { status: 500 }
     );
   }
