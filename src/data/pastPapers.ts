@@ -901,11 +901,22 @@ const kpkMDCAT2024: PastPaper = {
   questions: [...kpk2024Biology, ...kpk2024Chemistry, ...kpk2024Physics]
 };
 
+import { numsMDCAT2024 } from "./past-papers/nums-2024";
+import { punjabMDCAT2023 } from "./past-papers/punjab-2023";
+import { sindhMDCAT2023 } from "./past-papers/sindh-2023";
+import { kpkMDCAT2023 } from "./past-papers/kpk-2023";
+import { federalMDCAT2024 } from "./past-papers/federal-2024";
+
 // Export all past papers
 export const pastPapers: PastPaper[] = [
   sindhMDCAT2024,
   punjabMDCAT2024,
-  kpkMDCAT2024
+  kpkMDCAT2024,
+  numsMDCAT2024,
+  federalMDCAT2024,
+  punjabMDCAT2023,
+  sindhMDCAT2023,
+  kpkMDCAT2023,
 ];
 
 // Helper function to get past paper by ID
